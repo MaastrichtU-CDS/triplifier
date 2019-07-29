@@ -25,7 +25,9 @@ COPY pyScripts/reform_triples.py /pyScripts/reform_triples.py
 
 # install run script
 COPY run.sh /run.sh
+COPY convertData.sh /convertData.sh
 RUN dos2unix run.sh
+RUN dos2unix convertData.sh
 
 # set the run script
 CMD ["bash", "run.sh"]
