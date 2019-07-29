@@ -1,4 +1,5 @@
 import rdflib
+import re
 
 # Create stores
 sourceGraph = rdflib.Graph()
@@ -26,7 +27,7 @@ def processClassInstances(classUri):
         for propertyRow in propertyList:
             colName = removeNamespace(propertyRow["pred"])
             classNamespace = getNamespaceForUri(propertyRow["pred"])
-            columnObject = instanceUri + "_" + colName
+            columnObject = instanceUri + "/" + re.sub('^.*#', '',colName)
             dbColumnLabel = colName
             dbColumnObject = propertyRow["pred"] + "_class"
             dbValue = propertyRow["obj"]

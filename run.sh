@@ -65,7 +65,8 @@ else
     while true
     do
         sh convertData.sh
-        cd /pyScripts && python3 uploadData.py
+        cd /pyScripts && python3 uploadData.py && cd /
+        echo "================================== SLEEP =================================="
         sleep $SLEEPTIME
     done
 fi
