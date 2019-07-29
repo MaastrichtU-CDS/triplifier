@@ -8,8 +8,8 @@ r2rml = rdflib.Graph()
 ontology = rdflib.Graph()
 
 # Fill in-memory stores
-r2rml.parse("mapping.ttl", format="n3")
-ontology.parse("ontology.owl")
+r2rml.parse("/mapping.ttl", format="n3")
+ontology.parse("/ontology.owl")
 
 # Read query and remove comments
 with open('working_query_domain_range.sparql', 'r') as file:
@@ -41,5 +41,5 @@ for result in queryResultLiterals:
 
 # Export and overwrite updated ontology store
 ontologyUpdatedString = ontology.serialize(format="pretty-xml")
-with open("ontology.owl", 'w') as f:
+with open("/ontology.owl", 'w') as f:
     f.write(ontologyUpdatedString.decode("utf-8"))
