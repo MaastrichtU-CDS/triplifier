@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     curl \
     unzip \
+    requests \
     dos2unix
 
 RUN python3 -m pip install rdflib
@@ -22,6 +23,7 @@ COPY pyScripts/enrich.py /pyScripts/enrich.py
 COPY pyScripts/read_literal_properties.sparql /pyScripts/read_literal_properties.sparql
 COPY pyScripts/working_query_domain_range.sparql /pyScripts/working_query_domain_range.sparql
 COPY pyScripts/reform_triples.py /pyScripts/reform_triples.py
+COPY pyScripts/upoadData.py /pyScripts/upoadData.py
 
 # install run script
 COPY run.sh /run.sh
