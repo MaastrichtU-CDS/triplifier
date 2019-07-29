@@ -22,7 +22,7 @@ COPY pyScripts/enrich.py /pyScripts/enrich.py
 COPY pyScripts/read_literal_properties.sparql /pyScripts/read_literal_properties.sparql
 COPY pyScripts/working_query_domain_range.sparql /pyScripts/working_query_domain_range.sparql
 COPY pyScripts/reform_triples.py /pyScripts/reform_triples.py
-COPY pyScripts/upoadData.py /pyScripts/upoadData.py
+COPY pyScripts/uploadData.py /pyScripts/uploadData.py
 
 # install run script
 COPY run.sh /run.sh
