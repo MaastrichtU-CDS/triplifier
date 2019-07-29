@@ -5,10 +5,9 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     curl \
     unzip \
-    requests \
     dos2unix
 
-RUN python3 -m pip install rdflib
+RUN python3 -m pip install rdflib requests
 
 # install ontop libraries
 RUN mkdir /ontop
