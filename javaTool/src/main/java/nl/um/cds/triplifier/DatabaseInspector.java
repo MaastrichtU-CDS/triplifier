@@ -33,7 +33,6 @@ public class DatabaseInspector {
             String tableName = rs.getString("TABLE_NAME");
             String catalog = rs.getString("TABLE_CAT");
             String schema = rs.getString("TABLE_SCHEM");
-            System.out.println("Found table: " + tableName);
 
             Map<String, String> resultMap = new HashMap<String, String>();
             resultMap.put("name", tableName);
