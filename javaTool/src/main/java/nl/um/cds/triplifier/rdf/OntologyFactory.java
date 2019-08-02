@@ -52,9 +52,19 @@ public class OntologyFactory {
         this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "has_value"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
         this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "has_unit"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
         this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "has_unit"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
+
+        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "table"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
+        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "table"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"));
+        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "table"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
+        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "catalog"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
+        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "catalog"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"));
+        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "schema"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
+        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "schema"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"));
+        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "column"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
+        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "column"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
     }
 
-    public void processTable(String tableName, List<String> columns, List<String> primaryKeys, List<ForeignKeySpecification> foreignKeys) {
+    public void processTable(String tableName, List<String> columns, List<String> primaryKeys, List<ForeignKeySpecification> foreignKeys, String schemaName, String catalogName) {
         IRI DbTableClassIRI = vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable");
         IRI DbColumnClassIRI = vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn");
         IRI tableClassIRI = this.getClassForTable(tableName);
@@ -63,12 +73,19 @@ public class OntologyFactory {
         this.conn.add(tableClassIRI, RDFS.SUBCLASSOF, DbTableClassIRI);
         this.conn.add(tableClassIRI, RDFS.LABEL, vf.createLiteral(tableName));
 
+        this.conn.add(tableClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "table"), vf.createLiteral(tableName));
+        this.conn.add(tableClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "catalog"), vf.createLiteral(catalogName));
+        this.conn.add(tableClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "schema"), vf.createLiteral(schemaName));
+
         for(String column : columns) {
             IRI columnClassIRI = this.getClassForColumn(tableName, column);
 
             this.conn.add(columnClassIRI, RDF.TYPE, OWL.CLASS);
             this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, DbColumnClassIRI);
             this.conn.add(columnClassIRI, RDFS.LABEL, vf.createLiteral(tableName + "." + column));
+
+            this.conn.add(columnClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "table"), vf.createLiteral(tableName));
+            this.conn.add(columnClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "column"), vf.createLiteral(column));
         }
     }
 
