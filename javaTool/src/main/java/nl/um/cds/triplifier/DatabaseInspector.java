@@ -2,7 +2,9 @@ package nl.um.cds.triplifier;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseInspector {
     private Connection connection = null;
@@ -22,15 +24,23 @@ public class DatabaseInspector {
         System.out.println("Connected to database");
     }
 
-    public List<String> getTableNames() throws SQLException {
-        List<String> returnList = new ArrayList<String>();
+    public List<Map<String,String>> getTableNames() throws SQLException {
+        List<Map<String, String>> returnList = new ArrayList<Map<String, String>>();
 
         ResultSet rs = this.dbMetaData.getTables(null, null, null, new String[]{"TABLE"});
 
         while(rs.next()) {
             String tableName = rs.getString("TABLE_NAME");
+            String catalog = rs.getString("TABLE_CAT");
+            String schema = rs.getString("TABLE_SCHEM");
             System.out.println("Found table: " + tableName);
-            returnList.add(tableName);
+
+            Map<String, String> resultMap = new HashMap<String, String>();
+            resultMap.put("name", tableName);
+            resultMap.put("catalog", catalog);
+            resultMap.put("schema", schema);
+
+            returnList.add(resultMap);
         }
 
         return returnList;
@@ -48,10 +58,10 @@ public class DatabaseInspector {
         return returnList;
     }
 
-    public List<String> getPrimaryKeyColumns(String tableName) throws SQLException {
+    public List<String> getPrimaryKeyColumns(String catalog, String schema, String tableName) throws SQLException {
         List<String> returnList = new ArrayList<String>();
 
-        ResultSet rsColumn = this.dbMetaData.getPrimaryKeys(null, null, tableName);
+        ResultSet rsColumn = this.dbMetaData.getPrimaryKeys(catalog, schema, tableName);
         while(rsColumn.next()) {
             String columnName = rsColumn.getString("COLUMN_NAME");
             returnList.add(columnName);
@@ -60,10 +70,10 @@ public class DatabaseInspector {
         return returnList;
     }
 
-    public List<ForeignKeySpecification> getForeignKeyColumns(String tableName) throws SQLException {
+    public List<ForeignKeySpecification> getForeignKeyColumns(String catalog, String schema, String tableName) throws SQLException {
         List<ForeignKeySpecification> returnList = new ArrayList<ForeignKeySpecification>();
 
-        ResultSet rsColumn = this.dbMetaData.getExportedKeys(null, null, tableName);
+        ResultSet rsColumn = this.dbMetaData.getExportedKeys(catalog, schema, tableName);
         while(rsColumn.next()) {
             ForeignKeySpecification fkSpec = new ForeignKeySpecification(
                     rsColumn.getString("PKTABLE_NAME"),

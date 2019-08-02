@@ -1,29 +1,30 @@
 package nl.um.cds.triplifier;
 
 import java.sql.*;
+import java.util.Map;
 
 public class MainApp {
     String jdbcDriver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    String jdbcUrl = "jdbc:sqlserver://hix-dwhds-01.ad.maastro.nl:1433;databaseName=Rectum_Sage";
-    String jdbcUser = "usr_sage";
+    String jdbcUrl = "jdbc:sqlserver://localhost:1433;databaseName=variandw1";
+    String jdbcUser = "sa";
     String jdbcPass = "";
 
     public MainApp() {
         try {
             DatabaseInspector dbInspect = new DatabaseInspector(this.jdbcDriver, this.jdbcUrl, this.jdbcUser, this.jdbcPass);
 
-            for(String tableName : dbInspect.getTableNames()) {
+            for(Map<String,String> tableName : dbInspect.getTableNames()) {
                 System.out.println("Table name: " + tableName);
 
-                for(String columnName : dbInspect.getColumnNames(tableName)) {
+                for(String columnName : dbInspect.getColumnNames(tableName.get("name"))) {
                     System.out.println("    column: " + columnName);
                 }
 
-                for(String columnName : dbInspect.getPrimaryKeyColumns(tableName)) {
+                for(String columnName : dbInspect.getPrimaryKeyColumns(tableName.get("catalog"), tableName.get("schema"), tableName.get("name"))) {
                     System.out.println("    PK column: " + columnName);
                 }
 
-                for(ForeignKeySpecification fkSpec : dbInspect.getForeignKeyColumns(tableName)) {
+                for(ForeignKeySpecification fkSpec : dbInspect.getForeignKeyColumns(tableName.get("catalog"), tableName.get("schema"), tableName.get("name"))) {
                     System.out.println("    FK column: " + fkSpec.foreignKeyColumn + " | " + fkSpec.primaryKeyTable + "." + fkSpec.primaryKeyColumn);
                 }
             }
