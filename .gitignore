@@ -2,3 +2,6 @@ containerTest/ontology.owl
 containerTest/mapping.ttl
 containerTest/output.ttl
 containerTest/output_reform.ttl
+
+javaTool/target
+javaTool/*.iml
