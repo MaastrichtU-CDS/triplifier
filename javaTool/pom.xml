@@ -47,6 +47,16 @@
             <artifactId>rdf4j-repository-api</artifactId>
             <version>2.5.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.rdf4j</groupId>
+            <artifactId>rdf4j-rio-api</artifactId>
+            <version>2.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.rdf4j</groupId>
+            <artifactId>rdf4j-rio-rdfxml</artifactId>
+            <version>2.5.3</version>
+        </dependency>
 
     </dependencies>
 

@@ -2,14 +2,19 @@ package nl.um.cds.triplifier;
 
 import nl.um.cds.triplifier.rdf.OntologyFactory;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 import java.util.Map;
 
 public class MainApp {
+//    String jdbcDriver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+//    String jdbcUrl = "jdbc:sqlserver://hix-dwhds-01.ad.maastro.nl:1433;databaseName=Rectum_Sage";
+//    String jdbcUser = "usr_sage";
+//    String jdbcPass = "";
     String jdbcDriver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    String jdbcUrl = "jdbc:sqlserver://hix-dwhds-01.ad.maastro.nl:1433;databaseName=Rectum_Sage";
-    String jdbcUser = "usr_sage";
+    String jdbcUrl = "jdbc:sqlserver://localhost:1433;databaseName=variandw1";
+    String jdbcUser = "sa";
     String jdbcPass = "";
 
     public MainApp() {
@@ -37,7 +42,13 @@ public class MainApp {
             List<String> primaryKeys = dbInspect.getPrimaryKeyColumns(tableName.get("catalog"), tableName.get("schema"), tableName.get("name"));
             List<ForeignKeySpecification> foreignKeys = dbInspect.getForeignKeyColumns(tableName.get("catalog"), tableName.get("schema"), tableName.get("name"));
 
-            of.processTable(tableName.get("name"), columns, primaryKeys, foreignKeys);
+            of.processTable(tableName.get("name"), columns, primaryKeys, foreignKeys, tableName.get("schema"), tableName.get("catalog"));
+        }
+
+        try {
+            of.exportData("C:\\Users\\johan\\Documents\\Repositories\\FAIR\\triplifier\\javaTool\\ontology.owl");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
