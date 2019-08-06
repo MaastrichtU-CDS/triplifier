@@ -69,7 +69,7 @@ public class OntologyFactory {
         this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "ColumnReference"), RDFS.RANGE, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
 
         this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "table"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "table"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"));
+        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "table"), RDFS.RANGE, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"));
         this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "table"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
         this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "catalog"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
         this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "catalog"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"));
@@ -107,7 +107,7 @@ public class OntologyFactory {
         this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, dbColumnClassIRI);
         this.conn.add(columnClassIRI, RDFS.LABEL, vf.createLiteral(tableName + "." + column));
 
-        this.conn.add(columnClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "table"), vf.createLiteral(tableName));
+        this.conn.add(columnClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "table"), this.getClassForTable(tableName));
         this.conn.add(columnClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "column"), vf.createLiteral(column));
 
         return columnClassIRI;
@@ -118,7 +118,7 @@ public class OntologyFactory {
 
         for(String pKeyColumn : primaryKeys) {
             IRI columnClassIRI = this.getClassForColumn(tableName, pKeyColumn);
-            this.conn.add(columnClassIRI, RDF.TYPE, primaryKeyClassIRI);
+            this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, primaryKeyClassIRI);
         }
     }
 
@@ -127,7 +127,7 @@ public class OntologyFactory {
 
         for(ForeignKeySpecification fKeyColumn : foreignKeys) {
             IRI columnClassIRI = this.getClassForColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn());
-            this.conn.add(columnClassIRI, RDF.TYPE, foreignKeyClassIRI);
+            this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, foreignKeyClassIRI);
 
             String predicateName = fKeyColumn.getForeignKeyTable() + "_" + fKeyColumn.getForeignKeyColumn() + "_refersTo_" + fKeyColumn.getPrimaryKeyTable() + "_" + fKeyColumn.getPrimaryKeyColumn();
             String predicateLabel = fKeyColumn.getForeignKeyTable() + "." + fKeyColumn.getForeignKeyColumn() + " refers to " + fKeyColumn.getPrimaryKeyTable() + "." + fKeyColumn.getPrimaryKeyColumn();
@@ -139,7 +139,7 @@ public class OntologyFactory {
             IRI sourceIRI = this.addColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn(), vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
             //create target IRI to be sure it exists
             IRI targetIRI = this.addColumn(fKeyColumn.getPrimaryKeyTable(), fKeyColumn.getPrimaryKeyColumn(), vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
-            this.conn.add(targetIRI, RDF.TYPE, OWL.CLASS);
+            this.conn.add(sourceIRI, RDFS.SUBCLASSOF, vf.createIRI(this.conn.getNamespace("dbo"), "ForeignKey"));
 
             this.conn.add(predicateIRI, RDFS.DOMAIN, sourceIRI);
             this.conn.add(predicateIRI, RDFS.RANGE, targetIRI);
