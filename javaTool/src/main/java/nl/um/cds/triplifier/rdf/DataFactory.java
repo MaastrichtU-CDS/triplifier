@@ -1,5 +1,6 @@
 package nl.um.cds.triplifier.rdf;
 
+import nl.um.cds.triplifier.rdf.ontology.DBO;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.ValueFactory;
@@ -95,12 +96,29 @@ public class DataFactory {
 
                 IRI tableRowIRI = vf.createIRI(baseIriTable + resultRowId);
                 this.conn.add(tableRowIRI, RDF.TYPE, vf.createIRI(tableClassUri));
+                this.processColumns(queryResult, tableClassUri, tableRowIRI);
+
                 resultRowId++;
             }
         } catch (SQLException e) {
             System.out.println("Could not execute query: " + query);
         }
 
+    }
+
+    private void processColumns(ResultSet rowResults, String tableClassUri, IRI tableRowIRI) throws SQLException {
+        TupleQueryResult columnList = this.ontologyFactory.getColumnsForTableFromOntology(tableClassUri);
+        while(columnList.hasNext()) {
+            BindingSet columnResult = columnList.next();
+
+            IRI columnClassUri = vf.createIRI(columnResult.getValue("columnClassUri").stringValue());
+            String columnName = columnResult.getValue("columnName").stringValue();
+
+            IRI columnRowIRI = vf.createIRI(tableRowIRI.stringValue() + "/" + columnName);
+            this.conn.add(columnRowIRI, RDF.TYPE, columnClassUri);
+            this.conn.add(columnRowIRI, DBO.HAS_VALUE, vf.createLiteral(rowResults.getString(columnName)));
+            this.conn.add(tableRowIRI, DBO.HAS_COLUMN, columnRowIRI);
+        }
     }
 
     private Connection connectDatabase(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) throws SQLException, ClassNotFoundException {

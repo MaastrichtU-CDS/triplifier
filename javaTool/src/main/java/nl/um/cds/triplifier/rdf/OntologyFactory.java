@@ -146,4 +146,10 @@ public class OntologyFactory {
         TupleQueryResult result = tq.evaluate();
         return result;
     }
+
+    public TupleQueryResult getColumnsForTableFromOntology(String tableClassUri) {
+        TupleQuery tq = this.conn.prepareTupleQuery("PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?columnClassUri dbo:table <"+tableClassUri+">. ?columnClassUri dbo:column ?columnName. }");
+        TupleQueryResult result = tq.evaluate();
+        return result;
+    }
 }
