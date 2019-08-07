@@ -1,16 +1,14 @@
 package nl.um.cds.triplifier.rdf;
 
 import nl.um.cds.triplifier.ForeignKeySpecification;
+import nl.um.cds.triplifier.rdf.ontology.DBO;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
-import org.eclipse.rdf4j.model.util.URIUtil;
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
-import org.eclipse.rdf4j.query.*;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
@@ -45,101 +43,67 @@ public class OntologyFactory {
         this.repo.init();
         this.conn = repo.getConnection();
 
-        this.conn.setNamespace("dbo", "http://um-cds/ontologies/databaseontology/");
         this.conn.setNamespace("db", this.baseIri);
-
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"), RDF.TYPE, OWL.CLASS);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"), RDF.TYPE, OWL.CLASS);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "PrimaryKey"), RDF.TYPE, OWL.CLASS);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "PrimaryKey"), RDFS.SUBCLASSOF, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "ForeignKey"), RDF.TYPE, OWL.CLASS);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "ForeignKey"), RDFS.SUBCLASSOF, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
-
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "has_column"), RDF.TYPE, OWL.OBJECTPROPERTY);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "has_column"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"));
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "has_column"), RDFS.RANGE, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
-
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "has_value"), RDF.TYPE, OWL.DATATYPEPROPERTY);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "has_value"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "has_unit"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "has_unit"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
-
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "ColumnReference"), RDF.TYPE, OWL.OBJECTPROPERTY);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "ColumnReference"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "ColumnReference"), RDFS.RANGE, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
-
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "table"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "table"), RDFS.RANGE, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"));
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "table"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "catalog"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "catalog"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"));
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "schema"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "schema"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable"));
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "column"), RDF.TYPE, OWL.ANNOTATIONPROPERTY);
-        this.conn.add(vf.createIRI(this.conn.getNamespace("dbo"), "column"), RDFS.DOMAIN, vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
+        DBO.addOntologyToDatabaseConnection(this.conn);
     }
 
     public void processTable(String tableName, List<String> columns, List<String> primaryKeys, List<ForeignKeySpecification> foreignKeys, String schemaName, String catalogName) {
-        IRI DbTableClassIRI = vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseTable");
-        IRI DbColumnClassIRI = vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn");
         IRI tableClassIRI = this.getClassForTable(tableName);
 
         this.conn.add(tableClassIRI, RDF.TYPE, OWL.CLASS);
-        this.conn.add(tableClassIRI, RDFS.SUBCLASSOF, DbTableClassIRI);
+        this.conn.add(tableClassIRI, RDFS.SUBCLASSOF, DBO.DATABASETABLE);
         this.conn.add(tableClassIRI, RDFS.LABEL, vf.createLiteral(tableName));
 
-        this.conn.add(tableClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "table"), vf.createLiteral(tableName));
-        this.conn.add(tableClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "catalog"), vf.createLiteral(catalogName));
-        this.conn.add(tableClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "schema"), vf.createLiteral(schemaName));
+        this.conn.add(tableClassIRI, DBO.TABLE, vf.createLiteral(tableName));
+        this.conn.add(tableClassIRI, DBO.CATALOG, vf.createLiteral(catalogName));
+        this.conn.add(tableClassIRI, DBO.SCHEMA, vf.createLiteral(schemaName));
 
         for(String column : columns) {
-            this.addColumn(tableName, column, DbColumnClassIRI);
+            this.addColumn(tableName, column);
         }
 
         this.addPrimaryKeys(tableName, primaryKeys);
         this.addForeignKeys(foreignKeys);
     }
 
-    private IRI addColumn(String tableName, String column, IRI dbColumnClassIRI) {
+    private IRI addColumn(String tableName, String column) {
         IRI columnClassIRI = this.getClassForColumn(tableName, column);
 
         this.conn.add(columnClassIRI, RDF.TYPE, OWL.CLASS);
-        this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, dbColumnClassIRI);
+        this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, DBO.DATABASECOLUMN);
         this.conn.add(columnClassIRI, RDFS.LABEL, vf.createLiteral(tableName + "." + column));
 
-        this.conn.add(columnClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "table"), this.getClassForTable(tableName));
-        this.conn.add(columnClassIRI, vf.createIRI(this.conn.getNamespace("dbo"), "column"), vf.createLiteral(column));
+        this.conn.add(columnClassIRI, DBO.TABLE, this.getClassForTable(tableName));
+        this.conn.add(columnClassIRI, DBO.COLUMN, vf.createLiteral(column));
 
         return columnClassIRI;
     }
 
     private void addPrimaryKeys(String tableName, List<String> primaryKeys) {
-        IRI primaryKeyClassIRI = vf.createIRI(this.conn.getNamespace("dbo"), "PrimaryKey");
-
         for(String pKeyColumn : primaryKeys) {
             IRI columnClassIRI = this.getClassForColumn(tableName, pKeyColumn);
-            this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, primaryKeyClassIRI);
+            this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, DBO.PRIMARYKEY);
         }
     }
 
     private void addForeignKeys(List<ForeignKeySpecification> foreignKeys) {
-        IRI foreignKeyClassIRI = vf.createIRI(this.conn.getNamespace("dbo"), "ForeignKey");
 
         for(ForeignKeySpecification fKeyColumn : foreignKeys) {
             IRI columnClassIRI = this.getClassForColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn());
-            this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, foreignKeyClassIRI);
+            this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
 
             String predicateName = fKeyColumn.getForeignKeyTable() + "_" + fKeyColumn.getForeignKeyColumn() + "_refersTo_" + fKeyColumn.getPrimaryKeyTable() + "_" + fKeyColumn.getPrimaryKeyColumn();
             String predicateLabel = fKeyColumn.getForeignKeyTable() + "." + fKeyColumn.getForeignKeyColumn() + " refers to " + fKeyColumn.getPrimaryKeyTable() + "." + fKeyColumn.getPrimaryKeyColumn();
+
             IRI predicateIRI = vf.createIRI(this.baseIri, predicateName);
             this.conn.add(predicateIRI, RDF.TYPE, OWL.OBJECTPROPERTY);
             this.conn.add(predicateIRI, RDFS.LABEL, vf.createLiteral(predicateLabel));
-            this.conn.add(predicateIRI, RDFS.SUBPROPERTYOF, vf.createIRI(this.conn.getNamespace("dbo"), "ColumnReference"));
+            this.conn.add(predicateIRI, RDFS.SUBPROPERTYOF, DBO.COLUMNREFERENCE);
 
-            IRI sourceIRI = this.addColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn(), vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
+            IRI sourceIRI = this.addColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn());
             //create target IRI to be sure it exists
-            IRI targetIRI = this.addColumn(fKeyColumn.getPrimaryKeyTable(), fKeyColumn.getPrimaryKeyColumn(), vf.createIRI(this.conn.getNamespace("dbo"), "DatabaseColumn"));
-            this.conn.add(sourceIRI, RDFS.SUBCLASSOF, vf.createIRI(this.conn.getNamespace("dbo"), "ForeignKey"));
+            IRI targetIRI = this.addColumn(fKeyColumn.getPrimaryKeyTable(), fKeyColumn.getPrimaryKeyColumn());
+            this.conn.add(sourceIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
 
             this.conn.add(predicateIRI, RDFS.DOMAIN, sourceIRI);
             this.conn.add(predicateIRI, RDFS.RANGE, targetIRI);
