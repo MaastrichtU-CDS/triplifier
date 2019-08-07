@@ -9,6 +9,9 @@ import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
+import org.eclipse.rdf4j.query.BindingSet;
+import org.eclipse.rdf4j.query.TupleQuery;
+import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
@@ -21,7 +24,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OntologyFactory {
     private Repository repo = null;
@@ -55,8 +60,12 @@ public class OntologyFactory {
         this.conn.add(tableClassIRI, RDFS.LABEL, vf.createLiteral(tableName));
 
         this.conn.add(tableClassIRI, DBO.TABLE, vf.createLiteral(tableName));
-        this.conn.add(tableClassIRI, DBO.CATALOG, vf.createLiteral(catalogName));
-        this.conn.add(tableClassIRI, DBO.SCHEMA, vf.createLiteral(schemaName));
+        if(catalogName != null) {
+            this.conn.add(tableClassIRI, DBO.CATALOG, vf.createLiteral(catalogName));
+        }
+        if(schemaName != null) {
+            this.conn.add(tableClassIRI, DBO.SCHEMA, vf.createLiteral(schemaName));
+        }
 
         for(String column : columns) {
             this.addColumn(tableName, column);
@@ -130,5 +139,11 @@ public class OntologyFactory {
 
         fos.flush();
         fos.close();
+    }
+
+    public TupleQueryResult getTablesFromOntology() {
+        TupleQuery tq = this.conn.prepareTupleQuery("PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?tableClass rdfs:subClassOf dbo:DatabaseTable. OPTIONAL { ?tableClass dbo:schema ?schema. }. OPTIONAL { ?tableClass dbo:catalog ?catalog. }. ?tableClass dbo:table ?tableName. }");
+        TupleQueryResult result = tq.evaluate();
+        return result;
     }
 }

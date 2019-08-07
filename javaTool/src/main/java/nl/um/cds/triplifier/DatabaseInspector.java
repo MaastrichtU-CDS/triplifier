@@ -72,15 +72,19 @@ public class DatabaseInspector {
     public List<ForeignKeySpecification> getForeignKeyColumns(String catalog, String schema, String tableName) throws SQLException {
         List<ForeignKeySpecification> returnList = new ArrayList<ForeignKeySpecification>();
 
-        ResultSet rsColumn = this.dbMetaData.getExportedKeys(catalog, schema, tableName);
-        while(rsColumn.next()) {
-            ForeignKeySpecification fkSpec = new ForeignKeySpecification(
-                    rsColumn.getString("PKTABLE_NAME"),
-                    rsColumn.getString("PKCOLUMN_NAME"),
-                    rsColumn.getString("FKTABLE_NAME"),
-                    rsColumn.getString("PKCOLUMN_NAME")
-            );
-            returnList.add(fkSpec);
+        try {
+            ResultSet rsColumn = this.dbMetaData.getExportedKeys(catalog, schema, tableName);
+            while (rsColumn.next()) {
+                ForeignKeySpecification fkSpec = new ForeignKeySpecification(
+                        rsColumn.getString("PKTABLE_NAME"),
+                        rsColumn.getString("PKCOLUMN_NAME"),
+                        rsColumn.getString("FKTABLE_NAME"),
+                        rsColumn.getString("PKCOLUMN_NAME")
+                );
+                returnList.add(fkSpec);
+            }
+        } catch (SQLException e) {
+            System.out.println("No FK found for table " + tableName);
         }
 
         return returnList;
