@@ -152,4 +152,10 @@ public class OntologyFactory {
         TupleQueryResult result = tq.evaluate();
         return result;
     }
+
+    public TupleQueryResult getPrimaryKeysForTableFromOntology(String tableClassUri) {
+        TupleQuery tq = this.conn.prepareTupleQuery("PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?columnClassUri dbo:table <"+tableClassUri+">. ?columnClassUri dbo:column ?columnName. ?columnClassUri rdfs:subClassOf* dbo:PrimaryKey. }");
+        TupleQueryResult result = tq.evaluate();
+        return result;
+    }
 }

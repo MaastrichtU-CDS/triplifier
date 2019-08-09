@@ -89,15 +89,14 @@ public class DataFactory {
         }
 
         try {
-            ResultSet queryResult = conn.prepareStatement(query).executeQuery();
+            ResultSet sqlQueryResult = conn.prepareStatement(query).executeQuery();
 
             int resultRowId = 0;
-            while(queryResult.next()) {
-                String baseIriTable = this.baseIri + tableName + "/";
+            while(sqlQueryResult.next()) {
+                IRI tableRowIRI = this.getTableRowIRI(tableName, tableClassUri, resultRowId, sqlQueryResult);
 
-                IRI tableRowIRI = vf.createIRI(baseIriTable + resultRowId);
                 this.conn.add(tableRowIRI, RDF.TYPE, vf.createIRI(tableClassUri));
-                this.processColumns(queryResult, tableClassUri, tableRowIRI);
+                this.processColumns(sqlQueryResult, tableClassUri, tableRowIRI);
 
                 resultRowId++;
             }
@@ -105,6 +104,31 @@ public class DataFactory {
             System.out.println("Could not execute query: " + query);
         }
 
+    }
+
+    public IRI getTableRowIRI(String tableName, String tableClassUri, int resultRowId, ResultSet queryResult) throws SQLException {
+        String baseIriTable = this.baseIri + tableName + "/";
+        IRI tableRowIRI = vf.createIRI(baseIriTable + resultRowId);
+
+        TupleQueryResult pKeyList = this.ontologyFactory.getPrimaryKeysForTableFromOntology(tableClassUri);
+        if(pKeyList.hasNext()) {
+            String pKeyValue = "";
+            boolean isFirst = true;
+            while (pKeyList.hasNext()) {
+                BindingSet pKey = pKeyList.next();
+                if(!isFirst) {
+                    pKeyValue += "_";
+                } else {
+                    isFirst = false;
+                }
+
+                String pKeyColumnName = pKey.getValue("columnName").stringValue();
+                pKeyValue += queryResult.getString(pKeyColumnName);
+            }
+            tableRowIRI = vf.createIRI(baseIriTable + pKeyValue);
+        }
+
+        return tableRowIRI;
     }
 
     private void processColumns(ResultSet rowResults, String tableClassUri, IRI tableRowIRI) throws SQLException {
