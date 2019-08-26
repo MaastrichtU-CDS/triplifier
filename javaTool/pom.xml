@@ -31,6 +31,12 @@
             <artifactId>postgresql</artifactId>
             <version>9.1-901-1.jdbc4</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/net.sourceforge.csvjdbc/csvjdbc -->
+        <dependency>
+            <groupId>net.sourceforge.csvjdbc</groupId>
+            <artifactId>csvjdbc</artifactId>
+            <version>1.0.35</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.eclipse.rdf4j/rdf4j-sail-memory -->
         <dependency>
             <groupId>org.eclipse.rdf4j</groupId>

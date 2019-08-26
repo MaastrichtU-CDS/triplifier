@@ -136,8 +136,12 @@ public class DataFactory {
         while(columnList.hasNext()) {
             BindingSet columnResult = columnList.next();
 
-            IRI columnClassUri = vf.createIRI(columnResult.getValue("columnClassUri").stringValue());
+            String columnClassUriString = columnResult.getValue("columnClassUri").stringValue();
+            IRI columnClassUri = vf.createIRI(columnClassUriString);
             String columnName = columnResult.getValue("columnName").stringValue();
+
+            //TupleQueryResult foreignKeyList = this.ontologyFactory.getForeignKeyResults(columnClassUriString);
+            //todo fix when column is FK column
 
             IRI columnRowIRI = vf.createIRI(tableRowIRI.stringValue() + "/" + columnName);
             this.conn.add(columnRowIRI, RDF.TYPE, columnClassUri);
