@@ -6,7 +6,6 @@ import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.omg.CORBA.portable.ValueFactory;
 
 public class DBO {
     public static final String NAMESPACE = "http://um-cds/ontologies/databaseontology/";
