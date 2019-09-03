@@ -27,7 +27,7 @@ commitRequest = requests.put(transactionUrl + "?action=COMMIT")
 #####################
 
 turtle = ""
-with open('/output_reform.ttl', 'r') as myfile:
+with open('/output.ttl', 'r') as myfile:
     turtle=myfile.read()
 
 loadRequest = requests.post((outputEndpoint + "/statements?context=%3C" + graphName + "%3E"),
