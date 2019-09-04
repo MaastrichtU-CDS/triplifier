@@ -2,9 +2,6 @@
 # Official docker image.
 image: docker:latest
 
-variables:
-  VERSION: "1.0-canary"
-
 services:
   - docker:dind
 
@@ -29,5 +26,5 @@ dockerize:
     - um-cds
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$VERSION" .
-    - docker push "$CI_REGISTRY_IMAGE:$VERSION"
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME"
