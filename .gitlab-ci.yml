@@ -12,9 +12,6 @@ stages:
   - build
   - dockerize
 
-before_script:
-  - docker info
-
 buildTriplifier:
   stage: build
   image: maven:3.5.3-jdk-8
