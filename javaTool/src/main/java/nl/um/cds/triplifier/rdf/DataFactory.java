@@ -1,11 +1,11 @@
 package nl.um.cds.triplifier.rdf;
 
 import nl.um.cds.triplifier.rdf.ontology.DBO;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
-import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQueryResult;
@@ -14,7 +14,6 @@ import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.rio.RDFHandler;
-import org.eclipse.rdf4j.rio.rdfxml.RDFXMLWriter;
 import org.eclipse.rdf4j.rio.ntriples.NTriplesWriter;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
 
@@ -25,8 +24,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DataFactory {
     private Repository repo = null;
@@ -145,14 +142,14 @@ public class DataFactory {
             //TupleQueryResult foreignKeyList = this.ontologyFactory.getForeignKeyResults(columnClassUriString);
             //todo fix when column is FK column
 
-            IRI columnRowIRI = vf.createIRI(tableRowIRI.stringValue() + "/" + columnName);
+            IRI columnRowIRI = vf.createIRI(tableRowIRI.stringValue() + "/" + columnName.replaceAll(" ", "_"));
             String literalValue = rowResults.getString(columnName);
 
             this.conn.add(columnRowIRI, RDF.TYPE, columnClassUri);
             this.conn.add(tableRowIRI, DBO.HAS_COLUMN, columnRowIRI);
             // if there's no literal value for this column, then we can skip the creation of the column instance?
             if(literalValue != null) {
-                literalValue = new String(literalValue.getBytes(), UTF_8);
+                literalValue = StringEscapeUtils.escapeHtml(literalValue);
                 this.conn.add(columnRowIRI, DBO.HAS_VALUE, vf.createLiteral(literalValue));
             }
         }
