@@ -43,7 +43,7 @@ public class MainApp {
             jdbcDriver = props.getProperty("jdbc.driver");
             jdbcUrl = props.getProperty("jdbc.url");
             jdbcUser = props.getProperty("jdbc.user");
-            jdbcPass = props.getProperty("jdbc.pass");
+            jdbcPass = props.getProperty("jdbc.password");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
