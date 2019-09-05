@@ -26,6 +26,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class DataFactory {
     private Repository repo = null;
     private RepositoryConnection conn = null;
@@ -150,6 +152,7 @@ public class DataFactory {
             this.conn.add(tableRowIRI, DBO.HAS_COLUMN, columnRowIRI);
             // if there's no literal value for this column, then we can skip the creation of the column instance?
             if(literalValue != null) {
+                literalValue = new String(literalValue.getBytes(), UTF_8);
                 this.conn.add(columnRowIRI, DBO.HAS_VALUE, vf.createLiteral(literalValue));
             }
         }
