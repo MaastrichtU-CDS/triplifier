@@ -144,9 +144,14 @@ public class DataFactory {
             //todo fix when column is FK column
 
             IRI columnRowIRI = vf.createIRI(tableRowIRI.stringValue() + "/" + columnName);
+            String literalValue = rowResults.getString(columnName);
+
             this.conn.add(columnRowIRI, RDF.TYPE, columnClassUri);
-            this.conn.add(columnRowIRI, DBO.HAS_VALUE, vf.createLiteral(rowResults.getString(columnName)));
             this.conn.add(tableRowIRI, DBO.HAS_COLUMN, columnRowIRI);
+            // if there's no literal value for this column, then we can skip the creation of the column instance?
+            if(literalValue != null) {
+                this.conn.add(columnRowIRI, DBO.HAS_VALUE, vf.createLiteral(literalValue));
+            }
         }
     }
 
