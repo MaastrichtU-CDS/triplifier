@@ -53,18 +53,18 @@ if [ -z "$GRAPH_NAME" ]; then
     export GRAPH_NAME
 fi
 
-echo "jdbc.url = $DB_JDBC" > ontop.properties
-echo "jdbc.user = $DB_USER" >> ontop.properties
-echo "jdbc.password = $DB_PASS" >> ontop.properties
-echo "jdbc.driver = $DB_DRIVER" >> ontop.properties
+echo "jdbc.url = $DB_JDBC" > triplifier.properties
+echo "jdbc.user = $DB_USER" >> triplifier.properties
+echo "jdbc.password = $DB_PASS" >> triplifier.properties
+echo "jdbc.driver = $DB_DRIVER" >> triplifier.properties
 
 ############ run script ############
 if [ $SLEEPTIME = 0 ]; then
-    sh convertData.sh
+    java -jar triplifier.jar
 else
     while true
     do
-        sh convertData.sh
+        java -jar triplifier.jar
         cd /pyScripts && python3 uploadData.py && cd /
         echo "================================== SLEEP =================================="
         sleep $SLEEPTIME
