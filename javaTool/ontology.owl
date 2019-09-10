@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:db="http://localhost/rdf/ontology/"
+	xmlns:dbo="http://um-cds/ontologies/databaseontology/"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/DatabaseTable">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/DatabaseColumn">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/PrimaryKey">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/ForeignKey">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/has_column">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<domain xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+	<range xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/has_value">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+	<domain xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/has_unit">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+	<domain xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/ColumnReference">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<domain xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<range xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/table">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+	<range xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+	<domain xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/catalog">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+	<domain xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/schema">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+	<domain xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://um-cds/ontologies/databaseontology/column">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+	<domain xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy</label>
+	<dbo:table>dummy</dbo:table>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.studysubjectid">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.studysubjectid</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>studysubjectid</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.protocolid">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.protocolid</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>protocolid</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.interviewdate">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.interviewdate</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>interviewdate</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.crfversionstatus">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.crfversionstatus</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>crfversionstatus</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.versionname">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.versionname</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>versionname</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.gender">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.gender</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>gender</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.histology">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.histology</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>histology</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.histology_spec">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.histology_spec</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>histology_spec</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.auto_immune">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.auto_immune</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>auto_immune</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.smoking">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.smoking</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>smoking</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.packyears_smoker">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.packyears_smoker</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>packyears_smoker</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.packyears_ex_smoker">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.packyears_ex_smoker</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>packyears_ex_smoker</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.prev_trt">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.prev_trt</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>prev_trt</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.prev_trt_intent">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.prev_trt_intent</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>prev_trt_intent</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.date_chestrt_end">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.date_chestrt_end</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>date_chestrt_end</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.dose_chestrt">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.dose_chestrt</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>dose_chestrt</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.date_init_anti_pdl1">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.date_init_anti_pdl1</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>date_init_anti_pdl1</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.age">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.age</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>age</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.whopfs">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.whopfs</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>whopfs</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.karnofski">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.karnofski</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>karnofski</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.copd">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.copd</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>copd</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.copd_class">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.copd_class</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>copd_class</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.diabetes">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.diabetes</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>diabetes</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.hypertension">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.hypertension</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>hypertension</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.cardiovascular">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.cardiovascular</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>cardiovascular</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.cardiovascular_spec">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.cardiovascular_spec</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>cardiovascular_spec</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.other_comorb">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.other_comorb</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>other_comorb</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.bmi">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.bmi</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>bmi</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.anti_pdl1_med">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.anti_pdl1_med</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>anti_pdl1_med</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.anti_pdl1_dose">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.anti_pdl1_dose</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>anti_pdl1_dose</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.anti_pdl1_schedule">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.anti_pdl1_schedule</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>anti_pdl1_schedule</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.dyspnea_date">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.dyspnea_date</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>dyspnea_date</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.dyspnea_grade">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.dyspnea_grade</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>dyspnea_grade</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.syst_trt_pneumonitis">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.syst_trt_pneumonitis</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>syst_trt_pneumonitis</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.dose_syst_trt_cort">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.dose_syst_trt_cort</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>dose_syst_trt_cort</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.duration_syst_trt_cort">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.duration_syst_trt_cort</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>duration_syst_trt_cort</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.dose_syst_trt_ab">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.dose_syst_trt_ab</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>dose_syst_trt_ab</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.duration_syst_trt_ab">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.duration_syst_trt_ab</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>duration_syst_trt_ab</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.other_syst_trt_pneumonitis">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.other_syst_trt_pneumonitis</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>other_syst_trt_pneumonitis</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.clin_cause_pneumonitis">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.clin_cause_pneumonitis</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>clin_cause_pneumonitis</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.clin_other_cause_pneumonitis">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.clin_other_cause_pneumonitis</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>clin_other_cause_pneumonitis</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.rad_cause_pneumonitis">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.rad_cause_pneumonitis</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>rad_cause_pneumonitis</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.rad_other_cause_pneumonitis">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.rad_other_cause_pneumonitis</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>rad_other_cause_pneumonitis</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.course_pneumonitis">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.course_pneumonitis</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>course_pneumonitis</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.ult_cause_pneumonitis">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.ult_cause_pneumonitis</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>ult_cause_pneumonitis</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.ult_other_cause_pneumonitis">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">dummy.ult_other_cause_pneumonitis</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/dummy"/>
+	<dbo:column>ult_other_cause_pneumonitis</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/dummy.studysubjectid">
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/PrimaryKey"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_features">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_features</label>
+	<dbo:table>sql_features</dbo:table>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_features.feature_id">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_features.feature_id</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_features"/>
+	<dbo:column>feature_id</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_features.feature_name">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_features.feature_name</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_features"/>
+	<dbo:column>feature_name</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_features.sub_feature_id">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_features.sub_feature_id</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_features"/>
+	<dbo:column>sub_feature_id</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_features.sub_feature_name">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_features.sub_feature_name</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_features"/>
+	<dbo:column>sub_feature_name</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_features.is_supported">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_features.is_supported</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_features"/>
+	<dbo:column>is_supported</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_features.is_verified_by">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_features.is_verified_by</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_features"/>
+	<dbo:column>is_verified_by</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_features.comments">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_features.comments</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_features"/>
+	<dbo:column>comments</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_implementation_info">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_implementation_info</label>
+	<dbo:table>sql_implementation_info</dbo:table>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_implementation_info.implementation_info_id">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_implementation_info.implementation_info_id</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_implementation_info"/>
+	<dbo:column>implementation_info_id</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_implementation_info.implementation_info_name">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_implementation_info.implementation_info_name</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_implementation_info"/>
+	<dbo:column>implementation_info_name</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_implementation_info.integer_value">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_implementation_info.integer_value</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_implementation_info"/>
+	<dbo:column>integer_value</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_implementation_info.character_value">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_implementation_info.character_value</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_implementation_info"/>
+	<dbo:column>character_value</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_implementation_info.comments">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_implementation_info.comments</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_implementation_info"/>
+	<dbo:column>comments</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_languages">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_languages</label>
+	<dbo:table>sql_languages</dbo:table>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_languages.sql_language_source">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_languages.sql_language_source</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_languages"/>
+	<dbo:column>sql_language_source</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_languages.sql_language_year">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_languages.sql_language_year</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_languages"/>
+	<dbo:column>sql_language_year</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_languages.sql_language_conformance">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_languages.sql_language_conformance</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_languages"/>
+	<dbo:column>sql_language_conformance</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_languages.sql_language_integrity">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_languages.sql_language_integrity</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_languages"/>
+	<dbo:column>sql_language_integrity</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_languages.sql_language_implementation">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_languages.sql_language_implementation</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_languages"/>
+	<dbo:column>sql_language_implementation</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_languages.sql_language_binding_style">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_languages.sql_language_binding_style</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_languages"/>
+	<dbo:column>sql_language_binding_style</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_languages.sql_language_programming_language">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_languages.sql_language_programming_language</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_languages"/>
+	<dbo:column>sql_language_programming_language</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_packages">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_packages</label>
+	<dbo:table>sql_packages</dbo:table>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_packages.feature_id">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_packages.feature_id</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_packages"/>
+	<dbo:column>feature_id</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_packages.feature_name">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_packages.feature_name</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_packages"/>
+	<dbo:column>feature_name</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_packages.is_supported">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_packages.is_supported</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_packages"/>
+	<dbo:column>is_supported</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_packages.is_verified_by">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_packages.is_verified_by</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_packages"/>
+	<dbo:column>is_verified_by</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_packages.comments">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_packages.comments</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_packages"/>
+	<dbo:column>comments</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_parts">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_parts</label>
+	<dbo:table>sql_parts</dbo:table>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_parts.feature_id">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_parts.feature_id</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_parts"/>
+	<dbo:column>feature_id</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_parts.feature_name">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_parts.feature_name</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_parts"/>
+	<dbo:column>feature_name</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_parts.is_supported">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_parts.is_supported</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_parts"/>
+	<dbo:column>is_supported</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_parts.is_verified_by">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_parts.is_verified_by</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_parts"/>
+	<dbo:column>is_verified_by</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_parts.comments">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_parts.comments</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_parts"/>
+	<dbo:column>comments</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing</label>
+	<dbo:table>sql_sizing</dbo:table>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing.sizing_id">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing.sizing_id</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_sizing"/>
+	<dbo:column>sizing_id</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing.sizing_name">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing.sizing_name</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_sizing"/>
+	<dbo:column>sizing_name</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing.supported_value">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing.supported_value</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_sizing"/>
+	<dbo:column>supported_value</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing.comments">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing.comments</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_sizing"/>
+	<dbo:column>comments</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing_profiles">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseTable"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing_profiles</label>
+	<dbo:table>sql_sizing_profiles</dbo:table>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing_profiles.sizing_id">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing_profiles.sizing_id</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_sizing_profiles"/>
+	<dbo:column>sizing_id</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing_profiles.sizing_name">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing_profiles.sizing_name</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_sizing_profiles"/>
+	<dbo:column>sizing_name</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing_profiles.profile_id">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing_profiles.profile_id</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_sizing_profiles"/>
+	<dbo:column>profile_id</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing_profiles.required_value">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing_profiles.required_value</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_sizing_profiles"/>
+	<dbo:column>required_value</dbo:column>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://localhost/rdf/ontology/sql_sizing_profiles.comments">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<subClassOf xmlns="http://www.w3.org/2000/01/rdf-schema#" rdf:resource="http://um-cds/ontologies/databaseontology/DatabaseColumn"/>
+	<label xmlns="http://www.w3.org/2000/01/rdf-schema#">sql_sizing_profiles.comments</label>
+	<dbo:table rdf:resource="http://localhost/rdf/ontology/sql_sizing_profiles"/>
+	<dbo:column>comments</dbo:column>
+</rdf:Description>
+
+</rdf:RDF>
