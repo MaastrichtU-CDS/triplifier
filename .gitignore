@@ -5,3 +5,5 @@ containerTest/output_reform.ttl
 
 javaTool/target
 javaTool/*.iml
+
+.idea/

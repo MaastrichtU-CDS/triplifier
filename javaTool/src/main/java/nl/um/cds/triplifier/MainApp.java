@@ -53,11 +53,16 @@ public class MainApp {
         OntologyFactory of = new OntologyFactory();
         DataFactory df = new DataFactory(of);
         try {
+            System.out.println("Start extracting ontology: " + System.currentTimeMillis());
             DatabaseInspector dbInspect = new DatabaseInspector(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
             createOntology(dbInspect, of, ontologyFilePath);
+            System.out.println("Done extracting ontology: " + System.currentTimeMillis());
             System.out.println("Ontology exported to " + ontologyFilePath);
+            System.out.println("Start extracting data: " + System.currentTimeMillis());
             df.convertData(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
+            System.out.println("Start exporting data file: " + System.currentTimeMillis());
             df.exportData(outputFilePath);
+            System.out.println("Done: " + System.currentTimeMillis());
             System.out.println("Data exported to " + outputFilePath);
         } catch (SQLException e) {
             System.out.println("Could not connect to database with url " + jdbcUrl);
