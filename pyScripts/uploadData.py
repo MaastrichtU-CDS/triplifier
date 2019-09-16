@@ -39,6 +39,19 @@ commitRequest = requests.put(transactionUrl + "?action=COMMIT")
 print("done dropping database: " + str(datetime.now()))
 
 #####################
+# Load ontology triples
+#####################
+with open('/ontology.owl', 'r') as myfile:
+    ontologyTriples=myfile.read()
+
+loadRequest = requests.post((outputEndpoint + "/statements?context=%3Chttp://ontology.local/%3E"),
+    data=ontologyTriples, 
+    headers={
+        "Content-Type": "application/rdf+xml"
+    })
+print("Done uploading ontology: " + str(datetime.now()))
+
+#####################
 # Load RDF store with new data
 #####################
 
