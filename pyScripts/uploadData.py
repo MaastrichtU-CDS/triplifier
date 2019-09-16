@@ -66,4 +66,5 @@ loadRequest = requests.post((outputEndpoint + "/statements?context=%3Chttp://ann
     data=annotationTriples, 
     headers={
         "Content-Type": "application/x-turtle"
-    }
+    })
+print("Done uploading annotations: " + str(datetime.now()))
