@@ -35,12 +35,6 @@ if [ -z "$BASE_IRI" ]; then
     export BASE_IRI
 fi
 
-if [ -z "$R2RML_ENDPOINT" ]; then
-    R2RML_ENDPOINT="http://graphdb:7200/repositories/r2rml"
-    echo "R2RML_ENDPOINT set to $R2RML_ENDPOINT"
-    export R2RML_ENDPOINT
-fi
-
 if [ -z "$OUTPUT_ENDPOINT" ]; then
     OUTPUT_ENDPOINT="http://graphdb:7200/repositories/data"
     echo "OUTPUT_ENDPOINT set to $OUTPUT_ENDPOINT"
