@@ -11,6 +11,17 @@ outputEndpoint = os.environ["OUTPUT_ENDPOINT"]
 graphName = os.environ["GRAPH_NAME"]
 
 #####################
+# Extract annotation triples
+#####################
+annotationResponse = requests.post(outputEndpoint,
+    data="CONSTRUCT WHERE { GRAPH <http://annotation.local/> { ?s ?p ?o }}", 
+    headers={
+        "Content-Type": "application/sparql-query",
+        "Accept": "text/plain"
+    })
+annotationTriples = annotationResponse.text
+
+#####################
 # Clear RDF store
 #####################
 transactionRequest = requests.post(outputEndpoint + "/transactions", 
@@ -47,3 +58,12 @@ loadRequest = requests.post((outputEndpoint + "/statements?context=%3C" + graphN
     }
 )
 print("Done uploading triples: " + str(datetime.now()))
+
+#####################
+# Load annotation triples
+#####################
+loadRequest = requests.post((outputEndpoint + "/statements?context=%3Chttp://annotation.local/%3E"),
+    data=annotationTriples, 
+    headers={
+        "Content-Type": "application/x-turtle"
+    }
