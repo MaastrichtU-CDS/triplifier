@@ -13,8 +13,8 @@ graphName = os.environ["GRAPH_NAME"]
 #####################
 # Extract annotation triples
 #####################
-annotationResponse = requests.post(outputEndpoint,
-    data="CONSTRUCT WHERE { GRAPH <http://annotation.local/> { ?s ?p ?o }}", 
+annotationResponse = requests.post(outputEndpoint + "?infer=false",
+    data="CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://annotation.local/> { ?s ?p ?o }}", 
     headers={
         "Content-Type": "application/sparql-query",
         "Accept": "text/plain"
