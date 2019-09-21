@@ -142,7 +142,7 @@ public class OntologyFactory {
     }
 
     public TupleQueryResult getTablesFromOntology() {
-        TupleQuery tq = this.conn.prepareTupleQuery("PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?tableClass rdfs:subClassOf dbo:DatabaseTable. OPTIONAL { ?tableClass dbo:schema ?schema. }. OPTIONAL { ?tableClass dbo:catalog ?catalog. }. ?tableClass dbo:table ?tableName. }");
+        TupleQuery tq = this.conn.prepareTupleQuery("PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?tableClass rdfs:subClassOf dbo:TableRow. OPTIONAL { ?tableClass dbo:schema ?schema. }. OPTIONAL { ?tableClass dbo:catalog ?catalog. }. ?tableClass dbo:table ?tableName. }");
         TupleQueryResult result = tq.evaluate();
         return result;
     }
