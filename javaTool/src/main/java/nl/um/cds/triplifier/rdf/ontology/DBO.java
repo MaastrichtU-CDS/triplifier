@@ -9,8 +9,8 @@ import org.eclipse.rdf4j.repository.RepositoryConnection;
 
 public class DBO {
     public static final String NAMESPACE = "http://um-cds/ontologies/databaseontology/";
-    public static final IRI DATABASETABLE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "DatabaseTable");
-    public static final IRI DATABASECOLUMN = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "DatabaseColumn");
+    public static final IRI DATABASETABLE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "TableRow");
+    public static final IRI DATABASECOLUMN = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "ColumnCell");
     public static final IRI PRIMARYKEY = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "PrimaryKey");
     public static final IRI FOREIGNKEY = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "ForeignKey");
 
