@@ -87,6 +87,7 @@ docker run --rm ^
 
  The example below shows how to run the container as a service, where the materialization process is called every interval time (defined by `SLEEPTIME` in seconds).
 
+#### SQL Server example
  ```
 docker run --rm \
     -e DB_JDBC="jdbc:sqlserver://localhost;databaseName=my_database" \
@@ -100,3 +101,32 @@ docker run --rm \
  ```
 
  In this example, there is already a GraphDB docker container running, hence we can connect the docker containers. Therefore, the `OUTPUT_ENDPOINT` url contains the hostname "graphdb", as inserted by the `--link` option. If the endpoint is running at a different location, you can specify the full URL of that location, an omit the `--link` option.
+
+ #### CSV folder example
+ **on linux/macOS**
+ ```
+docker run --rm \
+    -e DB_JDBC="jdbc:relique:csv:/data?fileExtension=.csv" \
+    -e DB_USER=user \
+    -e DB_PASS=pass \
+    -e DB_DRIVER=org.relique.jdbc.csv.CsvDriver \
+    -e SLEEPTIME=60 \
+    -e OUTPUT_ENDPOINT="http://graphdb:7200/repositories/sage" \
+    -v $(pwd)/dataFolder:/data \
+    --link graphdb:graphdb \
+    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
+ ```
+
+ **on Windows**
+ ```
+docker run --rm \
+    -e DB_JDBC="jdbc:relique:csv:/data?fileExtension=.csv" \
+    -e DB_USER=user \
+    -e DB_PASS=pass \
+    -e DB_DRIVER=org.relique.jdbc.csv.CsvDriver \
+    -e SLEEPTIME=60 \
+    -e OUTPUT_ENDPOINT="http://graphdb:7200/repositories/sage" \
+    -v %cd%/dataFolder:/data \
+    --link graphdb:graphdb \
+    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
+ ```
