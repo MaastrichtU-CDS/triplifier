@@ -10,16 +10,32 @@ public class DatabaseInspector {
     private Connection connection = null;
     private DatabaseMetaData dbMetaData = null;
 
-    public DatabaseInspector(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) throws SQLException, ClassNotFoundException {
+    public DatabaseInspector(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) {
         this.connectDatabase(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
     }
 
-    private void connectDatabase(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) throws SQLException, ClassNotFoundException {
-        Class.forName(jdbcDriver);
+    private void connectDatabase(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) {
+        try {
+            Class.forName(jdbcDriver);
+        } catch (ClassNotFoundException e) {
+            System.out.println("Could not find JDBC driver name: " + jdbcDriver + ". Application will exit");
+            System.exit(1);
+        }
         System.out.println("JDBC Driver loaded");
 
-        this.connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPass);
-        this.dbMetaData = this.connection.getMetaData();
+
+        try {
+            this.connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPass);
+        } catch (SQLException e) {
+            System.out.println("Could not connect to the database. Is there an active connection to the database? Are the credentials correct?");
+            System.exit(2);
+        }
+        try {
+            this.dbMetaData = this.connection.getMetaData();
+        } catch (SQLException e) {
+            System.out.println("Could not get database metadata");
+            System.exit(3);
+        }
 
         System.out.println("Connected to database");
     }
