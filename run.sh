@@ -48,7 +48,7 @@ if [ -z "$GRAPH_NAME" ]; then
 fi
 
 if [ -z "$XMX" ]; then
-    XMX="-Xmx=2G"
+    XMX="-Xmx2g"
     echo "XMX set to $XMX"
     export XMX
 fi
