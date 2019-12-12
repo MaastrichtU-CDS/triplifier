@@ -18,6 +18,8 @@ public class MainApp {
         String propertiesFilePath = "triplifier.properties";
         String ontologyFilePath = "ontology.owl";
         String outputFilePath = "output.ttl";
+        boolean ontologyParsing = true;
+        boolean dataParsing = true;
 
         String jdbcDriver = "";
         String jdbcUrl = "";
@@ -31,6 +33,12 @@ public class MainApp {
                 outputFilePath = args[i + 1];
             } else if ("-t".equals(args[i])) {
                 ontologyFilePath = args[i + 1];
+            } else if ("--ontologyAndOrData".equals(args[i])) {
+                if ("ontology".equals(args[i+1])) {
+                    dataParsing = false;
+                } else if("data".equals(args[i+1])) {
+                    ontologyParsing = false;
+                }
             }
         }
 
@@ -53,17 +61,22 @@ public class MainApp {
         OntologyFactory of = new OntologyFactory();
         DataFactory df = new DataFactory(of);
         try {
-            System.out.println("Start extracting ontology: " + System.currentTimeMillis());
-            DatabaseInspector dbInspect = new DatabaseInspector(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
-            createOntology(dbInspect, of, ontologyFilePath);
-            System.out.println("Done extracting ontology: " + System.currentTimeMillis());
-            System.out.println("Ontology exported to " + ontologyFilePath);
-            System.out.println("Start extracting data: " + System.currentTimeMillis());
-            df.convertData(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
-            System.out.println("Start exporting data file: " + System.currentTimeMillis());
-            df.exportData(outputFilePath);
-            System.out.println("Done: " + System.currentTimeMillis());
-            System.out.println("Data exported to " + outputFilePath);
+            if(ontologyParsing) {
+                System.out.println("Start extracting ontology: " + System.currentTimeMillis());
+                DatabaseInspector dbInspect = new DatabaseInspector(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
+                createOntology(dbInspect, of, ontologyFilePath);
+                System.out.println("Done extracting ontology: " + System.currentTimeMillis());
+                System.out.println("Ontology exported to " + ontologyFilePath);
+            }
+
+            if(dataParsing) {
+                System.out.println("Start extracting data: " + System.currentTimeMillis());
+                df.convertData(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
+                System.out.println("Start exporting data file: " + System.currentTimeMillis());
+                df.exportData(outputFilePath);
+                System.out.println("Done: " + System.currentTimeMillis());
+                System.out.println("Data exported to " + outputFilePath);
+            }
         } catch (SQLException e) {
             System.out.println("Could not connect to database with url " + jdbcUrl);
             e.printStackTrace();

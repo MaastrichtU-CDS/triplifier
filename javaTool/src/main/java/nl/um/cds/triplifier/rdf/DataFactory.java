@@ -20,10 +20,12 @@ import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.net.InetAddress;
 
 public class DataFactory {
     private Repository repo = null;
@@ -33,11 +35,14 @@ public class DataFactory {
     private ValueFactory vf = SimpleValueFactory.getInstance();
 
     public DataFactory(OntologyFactory ontologyFactory) {
-        this("http://localhost/rdf/data/", ontologyFactory);
-    }
+        String hostname = "localhost";
+        try {
+            hostname = InetAddress.getLocalHost().getCanonicalHostName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
-    public DataFactory(String baseIri, OntologyFactory ontologyFactory) {
-        this.baseIri = baseIri;
+        this.baseIri = "http://" + hostname + "/rdf/data/";
         this.ontologyFactory = ontologyFactory;
         this.initialize();
     }
