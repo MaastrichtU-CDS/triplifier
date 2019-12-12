@@ -47,6 +47,12 @@ if [ -z "$GRAPH_NAME" ]; then
     export GRAPH_NAME
 fi
 
+if [ -z "$XMX" ]; then
+    XMX="-Xmx2g"
+    echo "XMX set to $XMX"
+    export XMX
+fi
+
 echo "jdbc.url = $DB_JDBC" > triplifier.properties
 echo "jdbc.user = $DB_USER" >> triplifier.properties
 echo "jdbc.password = $DB_PASS" >> triplifier.properties
@@ -58,7 +64,7 @@ if [ $SLEEPTIME = 0 ]; then
 else
     while true
     do
-        java -jar triplifier.jar
+        java $XMX -jar triplifier.jar
         cd /pyScripts && python3 uploadData.py && cd /
         echo "================================== SLEEP =================================="
         sleep $SLEEPTIME
