@@ -1,4 +1,4 @@
-# triplifier
+# Triplifier
 
 This repository creates the tooling project for the Triplifier.
 
@@ -138,3 +138,7 @@ docker run --rm \
     --link graphdb:graphdb \
     registry.gitlab.com/um-cds/fair/tools/triplifier:latest
  ```
+ 
+ ## Annotations using the result
+ An example of annotations (and insertions) can be found in the following repository:
+ * [https://gitlab.com/UM-CDS/fair/data/maastro-rectum](https://gitlab.com/UM-CDS/fair/data/maastro-rectum)
