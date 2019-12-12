@@ -80,9 +80,6 @@ public class MainApp {
         } catch (SQLException e) {
             System.out.println("Could not connect to database with url " + jdbcUrl);
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.out.println("Could not find JDBC driver " + jdbcDriver);
-            e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

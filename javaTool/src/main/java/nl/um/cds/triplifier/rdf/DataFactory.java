@@ -92,10 +92,13 @@ public class DataFactory {
             query = "SELECT * FROM " + tableName;
         }
 
+        System.out.println("Start processing table " + tableName);
+
         try {
             ResultSet sqlQueryResult = conn.prepareStatement(query).executeQuery();
 
             int resultRowId = 0;
+            int numberRows = sqlQueryResult.getFetchSize();
             while(sqlQueryResult.next()) {
                 IRI tableRowIRI = this.getTableRowIRI(tableName, tableClassUri, resultRowId, sqlQueryResult);
 
@@ -103,6 +106,7 @@ public class DataFactory {
                 this.processColumns(sqlQueryResult, tableClassUri, tableRowIRI);
 
                 resultRowId++;
+                System.out.println("Processed row " + resultRowId + " of " + numberRows);
             }
         } catch (SQLException e) {
             System.out.println("Could not execute query: " + query);
