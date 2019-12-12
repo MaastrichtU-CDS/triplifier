@@ -35,7 +35,7 @@ jdbc.driver = org.postgresql.Driver
 jdbc.url = jdbc:mysql://localhost/my_database
 jdbc.user = user
 jdbc.password = pass
-jdbc.driver = com.mysql.jdbc.Driver
+jdbc.driver = com.mysql.cj.jdbc.Driver
 ```
 
 **Microsoft SQL Server**
