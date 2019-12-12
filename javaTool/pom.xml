@@ -31,6 +31,12 @@
             <artifactId>postgresql</artifactId>
             <version>9.1-901-1.jdbc4</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.18</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/net.sourceforge.csvjdbc/csvjdbc -->
         <dependency>
             <groupId>net.sourceforge.csvjdbc</groupId>
