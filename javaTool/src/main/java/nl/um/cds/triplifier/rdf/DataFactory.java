@@ -55,7 +55,7 @@ public class DataFactory {
         this.conn.setNamespace("data", this.baseIri);
     }
 
-    public void convertData(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) {
+    public void convertData(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass, String outputFilePath) {
         try {
             Connection conn = this.connectDatabase(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
 
@@ -76,11 +76,17 @@ public class DataFactory {
                 }
 
                 this.processTable(conn, tableClassUri, tableName, catalog, schema);
+                this.exportData(outputFilePath + "_" + tableName);
+                this.conn.clear();
             }
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

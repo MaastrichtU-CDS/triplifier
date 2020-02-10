@@ -71,18 +71,13 @@ public class MainApp {
 
             if(dataParsing) {
                 System.out.println("Start extracting data: " + System.currentTimeMillis());
-                df.convertData(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
+                df.convertData(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass, outputFilePath);
                 System.out.println("Start exporting data file: " + System.currentTimeMillis());
-                df.exportData(outputFilePath);
                 System.out.println("Done: " + System.currentTimeMillis());
                 System.out.println("Data exported to " + outputFilePath);
             }
         } catch (SQLException e) {
             System.out.println("Could not connect to database with url " + jdbcUrl);
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
