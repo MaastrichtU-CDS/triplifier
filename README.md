@@ -141,7 +141,7 @@ docker run --rm \
 
 #### H2 file database example
 
-Please see the command line instruction below and replace `/path/to/h2/file.h2` with the path to your actual h2 database file.
+Please see the command line instruction below and replace `database_file_name` with the filename of your database (without the extension). Furthermore, copy the file database into the sub-folder `./db`. As an alternative, edit the line `-v $(pwd)/db:/db \` into `-v /folder/db/path:/db \` where "/folder/db/path" is the location of the H2 file database.
 
 The ontology and output files will be stored in the current folder.
 
@@ -150,13 +150,13 @@ touch $(pwd)/output.ttl
 touch $(pwd)/ontology.owl
 
 docker run --rm \
-    -e DB_JDBC="jdbc:h2:/test.h2" \
+    -e DB_JDBC="jdbc:h2:file:/db/database_file_name" \
     -e DB_USER=sa \
     -e DB_PASS=sa \
     -e DB_DRIVER=org.h2.Driver \
     -v $(pwd)/output.ttl:/output.ttl \
     -v $(pwd)/ontology.owl:/ontology.owl \
-    -v /path/to/h2/file.h2:/test.h2 \
+    -v $(pwd)/db:/db \
     registry.gitlab.com/um-cds/fair/tools/triplifier:master
 ```
  
