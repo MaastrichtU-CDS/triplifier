@@ -157,7 +157,7 @@ docker run --rm \
     -v $(pwd)/output.ttl:/output.ttl \
     -v $(pwd)/ontology.owl:/ontology.owl \
     -v $(pwd)/db:/db \
-    registry.gitlab.com/um-cds/fair/tools/triplifier:master
+    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
 ```
 
 #### SQLite file database example
@@ -174,7 +174,7 @@ docker run -it --rm \
     -v $(pwd)/output.ttl:/output.ttl \
     -v $(pwd)/ontology.owl:/ontology.owl \
     -v $(pwd)/db.sqlite:/my.db \
-    registry.gitlab.com/um-cds/fair/tools/triplifier:sqlite
+    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
 ```
  
  ## Annotations using the result
