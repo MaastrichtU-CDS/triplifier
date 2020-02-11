@@ -157,7 +157,24 @@ docker run --rm \
     -v $(pwd)/output.ttl:/output.ttl \
     -v $(pwd)/ontology.owl:/ontology.owl \
     -v $(pwd)/db:/db \
-    registry.gitlab.com/um-cds/fair/tools/triplifier:master
+    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
+```
+
+#### SQLite file database example
+
+For SQLite, please change the line `-v $(pwd)/db.sqlite:/my.db \` where `$(pwd)/db.sqlite` represents the local file database which is being used for analysis.
+
+```
+touch $(pwd)/output.ttl
+touch $(pwd)/ontology.owl
+
+docker run -it --rm \
+    -e DB_JDBC="jdbc:sqlite:/my.db" \
+    -e DB_DRIVER=org.sqlite.JDBC \
+    -v $(pwd)/output.ttl:/output.ttl \
+    -v $(pwd)/ontology.owl:/ontology.owl \
+    -v $(pwd)/db.sqlite:/my.db \
+    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
 ```
  
  ## Annotations using the result
