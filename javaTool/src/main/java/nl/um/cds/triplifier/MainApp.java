@@ -3,6 +3,8 @@ package nl.um.cds.triplifier;
 import nl.um.cds.triplifier.rdf.DataFactory;
 import nl.um.cds.triplifier.rdf.OntologyFactory;
 
+import org.apache.log4j.PropertyConfigurator;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -107,6 +109,7 @@ public class MainApp {
     }
 
     public static void main(String[] args) {
+        PropertyConfigurator.configure("log4j.properties");
         MainApp mainApp = new MainApp(args);
     }
 
