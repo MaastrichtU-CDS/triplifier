@@ -35,7 +35,7 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>7.4.0.jre8</version>
+            <version>8.2.2.jre8</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/postgresql/postgresql -->
         <dependency>
@@ -106,16 +106,6 @@
         <dependency>
             <groupId>org.eclipse.rdf4j</groupId>
             <artifactId>rdf4j-rio-rdfxml</artifactId>
-            <version>2.5.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.rdf4j</groupId>
-            <artifactId>rdf4j-repository-http</artifactId>
-            <version>2.5.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.rdf4j</groupId>
-            <artifactId>rdf4j-repository-sparql</artifactId>
             <version>2.5.3</version>
         </dependency>
         <dependency>

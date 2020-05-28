@@ -31,6 +31,8 @@ public class MainApp {
         String repoType = "memory";
         String repoUrl = "";
         String repoId = "";
+        String repoUser = "";
+        String repoPass = "";
 
         String baseUri = null;
 
@@ -66,6 +68,8 @@ public class MainApp {
             repoType = props.getProperty("repo.type");
             repoUrl = props.getProperty("repo.url");
             repoId = props.getProperty("repo.id");
+            repoUser = props.getProperty("repo.user");
+            repoPass = props.getProperty("repo.pass");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -76,7 +80,7 @@ public class MainApp {
         if(baseUri != null) {
             of = new OntologyFactory(baseUri);
         }
-        DataFactory df = new DataFactory(of, repoType, repoUrl, repoId);
+        DataFactory df = new DataFactory(of, repoType, repoUrl, repoId, repoUser, repoPass);
 
         try {
             if(ontologyParsing) {

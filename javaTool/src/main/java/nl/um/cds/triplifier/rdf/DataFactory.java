@@ -36,7 +36,7 @@ public class DataFactory {
     private String baseIri = "";
     private ValueFactory vf = SimpleValueFactory.getInstance();
 
-    public DataFactory(OntologyFactory ontologyFactory, String repoType, String repoUrl, String repoId) {
+    public DataFactory(OntologyFactory ontologyFactory, String repoType, String repoUrl, String repoId, String repoUser, String repoPass) {
         String hostname = "localhost";
         try {
             hostname = InetAddress.getLocalHost().getCanonicalHostName();
@@ -46,17 +46,21 @@ public class DataFactory {
 
         this.baseIri = "http://" + hostname + "/rdf/data/";
         this.ontologyFactory = ontologyFactory;
-        this.initialize(repoType, repoUrl, repoId);
+        this.initialize(repoType, repoUrl, repoId, repoUser, repoPass);
     }
 
-    private void initialize(String repoType, String repoUrl, String repoId) {
+    private void initialize(String repoType, String repoUrl, String repoId, String repoUser, String repoPass) {
         switch (repoType) {
             case "memory":
                 this.repo = new SailRepository(new MemoryStore());
                 this.repo.init();
                 break;
             case "rdf4j":
-                this.repo = new HTTPRepository(repoUrl, repoId);
+                HTTPRepository httpRepo = new HTTPRepository(repoUrl, repoId);
+                if (!("".equals(repoUser) || repoUser == null)) {
+                    httpRepo.setUsernameAndPassword(repoUser, repoPass);
+                    this.repo = httpRepo;
+                }
                 break;
             case "sparql":
                 this.repo = new SPARQLRepository(repoUrl);
