@@ -12,7 +12,9 @@ import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
+import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
+import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
 import org.eclipse.rdf4j.rio.RDFHandler;
 import org.eclipse.rdf4j.rio.ntriples.NTriplesWriter;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
@@ -34,7 +36,7 @@ public class DataFactory {
     private String baseIri = "";
     private ValueFactory vf = SimpleValueFactory.getInstance();
 
-    public DataFactory(OntologyFactory ontologyFactory) {
+    public DataFactory(OntologyFactory ontologyFactory, String repoType, String repoUrl, String repoId) {
         String hostname = "localhost";
         try {
             hostname = InetAddress.getLocalHost().getCanonicalHostName();
@@ -44,12 +46,23 @@ public class DataFactory {
 
         this.baseIri = "http://" + hostname + "/rdf/data/";
         this.ontologyFactory = ontologyFactory;
-        this.initialize();
+        this.initialize(repoType, repoUrl, repoId);
     }
 
-    private void initialize() {
-        this.repo = new SailRepository(new MemoryStore());
-        this.repo.init();
+    private void initialize(String repoType, String repoUrl, String repoId) {
+        switch (repoType) {
+            case "memory":
+                this.repo = new SailRepository(new MemoryStore());
+                this.repo.init();
+                break;
+            case "rdf4j":
+                this.repo = new HTTPRepository(repoUrl, repoId);
+                break;
+            case "sparql":
+                this.repo = new SPARQLRepository(repoUrl);
+                break;
+        }
+
         this.conn = repo.getConnection();
 
         this.conn.setNamespace("data", this.baseIri);

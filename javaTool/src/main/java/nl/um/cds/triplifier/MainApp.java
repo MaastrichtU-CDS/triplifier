@@ -26,6 +26,10 @@ public class MainApp {
         String jdbcUser = "";
         String jdbcPass = "";
 
+        String repoType = "memory";
+        String repoUrl = "";
+        String repoId = "";
+
         String baseUri = null;
 
         for(int i=0; i<args.length; i++) {
@@ -56,6 +60,10 @@ public class MainApp {
             jdbcUrl = props.getProperty("jdbc.url");
             jdbcUser = props.getProperty("jdbc.user");
             jdbcPass = props.getProperty("jdbc.password");
+
+            repoType = props.getProperty("repo.type");
+            repoUrl = props.getProperty("repo.url");
+            repoId = props.getProperty("repo.id");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -66,7 +74,7 @@ public class MainApp {
         if(baseUri != null) {
             of = new OntologyFactory(baseUri);
         }
-        DataFactory df = new DataFactory(of);
+        DataFactory df = new DataFactory(of, repoType, repoUrl, repoId);
 
         try {
             if(ontologyParsing) {
@@ -80,10 +88,13 @@ public class MainApp {
             if(dataParsing) {
                 System.out.println("Start extracting data: " + System.currentTimeMillis());
                 df.convertData(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
-                System.out.println("Start exporting data file: " + System.currentTimeMillis());
-                df.exportData(outputFilePath);
+                if ("memory".equals(repoType)) {
+                    System.out.println("Start exporting data file: " + System.currentTimeMillis());
+                    df.exportData(outputFilePath);
+                    System.out.println("Data exported to " + outputFilePath);
+                }
                 System.out.println("Done: " + System.currentTimeMillis());
-                System.out.println("Data exported to " + outputFilePath);
+
             }
         } catch (SQLException e) {
             System.out.println("Could not connect to database with url " + jdbcUrl);
