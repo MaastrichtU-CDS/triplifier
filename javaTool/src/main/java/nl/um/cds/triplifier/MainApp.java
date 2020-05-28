@@ -26,6 +26,8 @@ public class MainApp {
         String jdbcUser = "";
         String jdbcPass = "";
 
+        String baseUri = null;
+
         for(int i=0; i<args.length; i++) {
             if ("-p".equals(args[i])) {
                 propertiesFilePath = args[i + 1];
@@ -33,6 +35,8 @@ public class MainApp {
                 outputFilePath = args[i + 1];
             } else if ("-t".equals(args[i])) {
                 ontologyFilePath = args[i + 1];
+            } else if ("-b".equals(args[i])) {
+                baseUri = args[i + 1];
             } else if ("--ontologyAndOrData".equals(args[i])) {
                 if ("ontology".equals(args[i+1])) {
                     dataParsing = false;
@@ -59,7 +63,11 @@ public class MainApp {
         }
 
         OntologyFactory of = new OntologyFactory();
+        if(baseUri != null) {
+            of = new OntologyFactory(baseUri);
+        }
         DataFactory df = new DataFactory(of);
+
         try {
             if(ontologyParsing) {
                 System.out.println("Start extracting ontology: " + System.currentTimeMillis());
