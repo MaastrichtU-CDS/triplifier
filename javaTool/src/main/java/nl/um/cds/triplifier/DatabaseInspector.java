@@ -25,9 +25,16 @@ public class DatabaseInspector {
 
 
         try {
-            this.connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPass);
+            if (jdbcUrl.contains("integratedSecurity")) {
+                System.out.println("Skipping username/password, as integratedSecurity is found");
+                this.connection = DriverManager.getConnection(jdbcUrl);
+            } else {
+                this.connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPass);
+            }
         } catch (SQLException e) {
             System.out.println("Could not connect to the database. Is there an active connection to the database? Are the credentials correct?");
+            System.out.println("JDBC URL used: " + jdbcUrl);
+            e.printStackTrace();
             System.exit(2);
         }
         try {
