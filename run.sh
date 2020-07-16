@@ -60,11 +60,11 @@ echo "jdbc.driver = $DB_DRIVER" >> triplifier.properties
 
 ############ run script ############
 if [ $SLEEPTIME = 0 ]; then
-    java -jar triplifier.jar
+    java $XMX -jar triplifier.jar -t /output/ontology.owl -o /output/instances.ttl
 else
     while true
     do
-        java $XMX -jar triplifier.jar
+        java $XMX -jar triplifier.jar -t /output/ontology.owl -o /output/instances.ttl
         cd /pyScripts && python3 uploadData.py && cd /
         echo "================================== SLEEP =================================="
         sleep $SLEEPTIME

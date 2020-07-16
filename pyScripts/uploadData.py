@@ -41,7 +41,7 @@ print("done dropping database: " + str(datetime.now()))
 #####################
 # Load ontology triples
 #####################
-with open('/ontology.owl', 'r') as myfile:
+with open('/output/ontology.owl', 'r') as myfile:
     ontologyTriples=myfile.read()
 
 loadRequest = requests.post((outputEndpoint + "/statements?context=%3Chttp://ontology.local/%3E"),
@@ -55,12 +55,12 @@ print("Done uploading ontology: " + str(datetime.now()))
 # Load RDF store with new data
 #####################
 
-num_lines = sum(1 for line in open('/output.ttl'))
+num_lines = sum(1 for line in open('/output/instances.ttl'))
 print("Number of triples: %s" % num_lines)
 
 print("Read ttl file: " + str(datetime.now()))
 turtle = ""
-with open('/output.ttl', 'r') as myfile:
+with open('/output/instances.ttl', 'r') as myfile:
     turtle=myfile.read()
 
 print("Start uploading triples: " + str(datetime.now()))

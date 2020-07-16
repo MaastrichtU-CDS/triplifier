@@ -16,6 +16,9 @@ COPY javaTool/target/triplifier-1.0-SNAPSHOT-jar-with-dependencies.jar triplifie
 RUN mkdir /pyScripts
 COPY pyScripts/uploadData.py /pyScripts/uploadData.py
 
+# create output folder
+RUN mkdir /output
+
 # install run script
 COPY run.sh /run.sh
 RUN dos2unix run.sh
