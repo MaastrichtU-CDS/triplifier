@@ -72,8 +72,7 @@ docker run --rm \
     -e DB_USER=my_username \
     -e DB_PASS=my_password \
     -e DB_DRIVER=com.microsoft.sqlserver.jdbc.SQLServerDriver \
-    -v $(pwd)/output.ttl:/output.ttl \
-    -v $(pwd)/ontology.owl:/ontology.owl \
+    -v $(pwd)/output:/output \
     registry.gitlab.com/um-cds/fair/tools/triplifier:latest
  ```
 
@@ -84,8 +83,7 @@ docker run --rm ^
     -e DB_USER=my_username ^
     -e DB_PASS=my_password ^
     -e DB_DRIVER=com.microsoft.sqlserver.jdbc.SQLServerDriver ^
-    -v %cd%/output.ttl:/output.ttl ^
-    -v %cd%/ontology.owl:/ontology.owl ^
+    -v %cd%/output:/output ^
     registry.gitlab.com/um-cds/fair/tools/triplifier:latest
  ```
 
@@ -143,19 +141,15 @@ docker run --rm \
 
 Please see the command line instruction below and replace `database_file_name` with the filename of your database (without the extension). Furthermore, copy the file database into the sub-folder `./db`. As an alternative, edit the line `-v $(pwd)/db:/db \` into `-v /folder/db/path:/db \` where "/folder/db/path" is the location of the H2 file database.
 
-The ontology and output files will be stored in the current folder.
+The ontology and output files will be stored in the output folder.
 
 ```
-touch $(pwd)/output.ttl
-touch $(pwd)/ontology.owl
-
 docker run --rm \
     -e DB_JDBC="jdbc:h2:file:/db/database_file_name" \
     -e DB_USER=sa \
     -e DB_PASS=sa \
     -e DB_DRIVER=org.h2.Driver \
-    -v $(pwd)/output.ttl:/output.ttl \
-    -v $(pwd)/ontology.owl:/ontology.owl \
+    -v $(pwd)/output:/output \
     -v $(pwd)/db:/db \
     registry.gitlab.com/um-cds/fair/tools/triplifier:latest
 ```
@@ -171,8 +165,7 @@ touch $(pwd)/ontology.owl
 docker run -it --rm \
     -e DB_JDBC="jdbc:sqlite:/my.db" \
     -e DB_DRIVER=org.sqlite.JDBC \
-    -v $(pwd)/output.ttl:/output.ttl \
-    -v $(pwd)/ontology.owl:/ontology.owl \
+    -v $(pwd)/output:/output \
     -v $(pwd)/db.sqlite:/my.db \
     registry.gitlab.com/um-cds/fair/tools/triplifier:latest
 ```
