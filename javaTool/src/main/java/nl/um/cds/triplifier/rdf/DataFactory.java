@@ -1,7 +1,9 @@
 package nl.um.cds.triplifier.rdf;
 
+import nl.um.cds.triplifier.DatabaseInspector;
 import nl.um.cds.triplifier.rdf.ontology.DBO;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.ValueFactory;
@@ -35,6 +37,7 @@ public class DataFactory {
     private OntologyFactory ontologyFactory = null;
     private String baseIri = "";
     private ValueFactory vf = SimpleValueFactory.getInstance();
+    private static Logger logger = Logger.getLogger(DataFactory.class);
 
     public DataFactory(OntologyFactory ontologyFactory, String repoType, String repoUrl, String repoId, String repoUser, String repoPass) {
         String hostname = "localhost";
@@ -109,7 +112,7 @@ public class DataFactory {
             query = "SELECT * FROM " + tableName;
         }
 
-        System.out.println("Start processing table " + tableName);
+        logger.info("Start processing table " + tableName);
 
         try {
             ResultSet sqlQueryResult = conn.prepareStatement(query).executeQuery();
@@ -123,10 +126,10 @@ public class DataFactory {
                 this.processColumns(sqlQueryResult, tableClassUri, tableRowIRI);
 
                 resultRowId++;
-                System.out.println("Processed row " + resultRowId + " of " + numberRows);
+                logger.debug("Processed row " + resultRowId + " of " + numberRows);
             }
         } catch (SQLException e) {
-            System.out.println("Could not execute query: " + query);
+            logger.warn("Could not execute query: " + query);
         }
 
     }
@@ -183,10 +186,10 @@ public class DataFactory {
 
     private Connection connectDatabase(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) throws SQLException, ClassNotFoundException {
         Class.forName(jdbcDriver);
-        System.out.println("JDBC Driver loaded");
+        logger.debug("JDBC Driver loaded");
 
         Connection connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPass);
-        System.out.println("Connected to database");
+        logger.debug("Connected to database");
 
         return connection;
     }

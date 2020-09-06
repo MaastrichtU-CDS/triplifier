@@ -3,6 +3,7 @@ package nl.um.cds.triplifier;
 import nl.um.cds.triplifier.rdf.DataFactory;
 import nl.um.cds.triplifier.rdf.OntologyFactory;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.net.URL;
 
 public class MainApp {
 
@@ -36,6 +38,9 @@ public class MainApp {
 
         String baseUri = null;
 
+        Logger logger = Logger.getLogger(this.getClass());
+        URL log4jResource = MainApp.class.getResource("log4j.properties");
+
         for(int i=0; i<args.length; i++) {
             if ("-p".equals(args[i])) {
                 propertiesFilePath = args[i + 1];
@@ -56,7 +61,7 @@ public class MainApp {
 
         Properties props = new Properties();
         try {
-            System.out.println(new File(propertiesFilePath).getAbsolutePath());
+            logger.debug(new File(propertiesFilePath).getAbsolutePath());
             FileInputStream fis = new FileInputStream(new File(propertiesFilePath));
             props.load(fis);
 
@@ -84,26 +89,26 @@ public class MainApp {
 
         try {
             if(ontologyParsing) {
-                System.out.println("Start extracting ontology: " + System.currentTimeMillis());
+                logger.info("Start extracting ontology: " + System.currentTimeMillis());
                 DatabaseInspector dbInspect = new DatabaseInspector(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
                 createOntology(dbInspect, of, ontologyFilePath);
-                System.out.println("Done extracting ontology: " + System.currentTimeMillis());
-                System.out.println("Ontology exported to " + ontologyFilePath);
+                logger.info("Done extracting ontology: " + System.currentTimeMillis());
+                logger.info("Ontology exported to " + ontologyFilePath);
             }
 
             if(dataParsing) {
-                System.out.println("Start extracting data: " + System.currentTimeMillis());
+                logger.info("Start extracting data: " + System.currentTimeMillis());
                 df.convertData(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
                 if ("memory".equals(repoType)) {
-                    System.out.println("Start exporting data file: " + System.currentTimeMillis());
+                    logger.info("Start exporting data file: " + System.currentTimeMillis());
                     df.exportData(outputFilePath);
-                    System.out.println("Data exported to " + outputFilePath);
+                    logger.info("Data exported to " + outputFilePath);
                 }
-                System.out.println("Done: " + System.currentTimeMillis());
+                logger.info("Done: " + System.currentTimeMillis());
 
             }
         } catch (SQLException e) {
-            System.out.println("Could not connect to database with url " + jdbcUrl);
+            logger.error("Could not connect to database with url " + jdbcUrl);
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -113,13 +118,20 @@ public class MainApp {
     }
 
     public static void main(String[] args) {
-        PropertyConfigurator.configure("log4j.properties");
+        File f = new File("log4j.properties");
+        if(f.exists()) {
+            PropertyConfigurator.configure("log4j.properties");
+        } else {
+            PropertyConfigurator.configure(MainApp.class.getClassLoader().getResourceAsStream("log4j.properties"));
+        }
+
         MainApp mainApp = new MainApp(args);
     }
 
     private void createOntology(DatabaseInspector dbInspect, OntologyFactory of, String ontologyOutputFilePath) throws SQLException {
+        Logger logger = Logger.getLogger(this.getClass());
         for(Map<String,String> tableName : dbInspect.getTableNames()) {
-            System.out.println("Table name: " + tableName);
+            logger.info("Table name: " + tableName);
             List<String> columns = dbInspect.getColumnNames(tableName.get("name"));
             List<String> primaryKeys = dbInspect.getPrimaryKeyColumns(tableName.get("catalog"), tableName.get("schema"), tableName.get("name"));
             List<ForeignKeySpecification> foreignKeys = dbInspect.getForeignKeyColumns(tableName.get("catalog"), tableName.get("schema"), tableName.get("name"));

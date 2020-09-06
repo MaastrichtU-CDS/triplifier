@@ -1,5 +1,7 @@
 package nl.um.cds.triplifier;
 
+import org.apache.log4j.Logger;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.Map;
 public class DatabaseInspector {
     private Connection connection = null;
     private DatabaseMetaData dbMetaData = null;
+    private static Logger logger = Logger.getLogger(DatabaseInspector.class);
 
     public DatabaseInspector(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) {
         this.connectDatabase(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
@@ -18,33 +21,33 @@ public class DatabaseInspector {
         try {
             Class.forName(jdbcDriver);
         } catch (ClassNotFoundException e) {
-            System.out.println("Could not find JDBC driver name: " + jdbcDriver + ". Application will exit");
+            logger.error("Could not find JDBC driver name: " + jdbcDriver + ". Application will exit");
             System.exit(1);
         }
-        System.out.println("JDBC Driver loaded");
+        logger.debug("JDBC Driver loaded");
 
 
         try {
             if (jdbcUrl.contains("integratedSecurity")) {
-                System.out.println("Skipping username/password, as integratedSecurity is found");
+                logger.debug("Skipping username/password, as integratedSecurity is found");
                 this.connection = DriverManager.getConnection(jdbcUrl);
             } else {
                 this.connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPass);
             }
         } catch (SQLException e) {
-            System.out.println("Could not connect to the database. Is there an active connection to the database? Are the credentials correct?");
-            System.out.println("JDBC URL used: " + jdbcUrl);
+            logger.error("Could not connect to the database. Is there an active connection to the database? Are the credentials correct?");
+            logger.error("JDBC URL used: " + jdbcUrl);
             e.printStackTrace();
             System.exit(2);
         }
         try {
             this.dbMetaData = this.connection.getMetaData();
         } catch (SQLException e) {
-            System.out.println("Could not get database metadata");
+            logger.error("Could not get database metadata");
             System.exit(3);
         }
 
-        System.out.println("Connected to database");
+        logger.debug("Connected to database");
     }
 
     public List<Map<String,String>> getTableNames() throws SQLException {
@@ -107,7 +110,7 @@ public class DatabaseInspector {
                 returnList.add(fkSpec);
             }
         } catch (SQLException e) {
-            System.out.println("No FK found for table " + tableName);
+            logger.debug("No FK found for table " + tableName);
         }
 
         return returnList;
