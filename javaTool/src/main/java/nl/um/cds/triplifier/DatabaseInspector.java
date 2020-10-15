@@ -99,7 +99,7 @@ public class DatabaseInspector {
         List<ForeignKeySpecification> returnList = new ArrayList<ForeignKeySpecification>();
 
         try {
-            ResultSet rsColumn = this.dbMetaData.getExportedKeys(catalog, schema, tableName);
+            ResultSet rsColumn = this.dbMetaData.getImportedKeys(catalog, schema, tableName);
             while (rsColumn.next()) {
                 ForeignKeySpecification fkSpec = new ForeignKeySpecification(
                         rsColumn.getString("PKTABLE_NAME"),

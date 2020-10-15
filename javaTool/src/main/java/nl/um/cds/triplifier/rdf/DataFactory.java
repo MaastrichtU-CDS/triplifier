@@ -11,6 +11,7 @@ import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQueryResult;
+import org.eclipse.rdf4j.query.Update;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
@@ -103,6 +104,36 @@ public class DataFactory {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        generateForeignKeyRelations();
+    }
+
+    private void generateForeignKeyRelations() {
+        TupleQueryResult foreignKeys = ontologyFactory.getForeignKeys();
+        while (foreignKeys.hasNext()) {
+            BindingSet foreignKey = foreignKeys.next();
+            String fkPredicate = foreignKey.getValue("fkPredicate").stringValue();
+            String columnClassUri = foreignKey.getValue("columnClassUri").stringValue();
+            String targetClassUri = foreignKey.getValue("targetClassUri").stringValue();
+
+            String insertQuery = "PREFIX dbo: <http://um-cds/ontologies/databaseontology/>\n" +
+                    "        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+                    "        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                    "\n" +
+                    "        INSERT {\n" +
+                    "            ?sources <"+fkPredicate+"> ?targets.\n" +
+                    "        } WHERE {\n" +
+                    "\n" +
+                    "            ?sources rdf:type <"+columnClassUri+">;\n" +
+                    "                     dbo:has_value ?columnValue.\n" +
+                    "\n" +
+                    "            ?targets rdf:type <"+targetClassUri+">;\n" +
+                    "                     dbo:has_value ?columnValue.\n" +
+                    "        }";
+            logger.debug(insertQuery);
+            Update update = this.conn.prepareUpdate(insertQuery);
+            update.execute();
+        }
     }
 
     private void processTable(Connection conn, String tableClassUri, String tableName, String catalog, String schema) {
@@ -167,9 +198,6 @@ public class DataFactory {
             String columnClassUriString = columnResult.getValue("columnClassUri").stringValue();
             IRI columnClassUri = vf.createIRI(columnClassUriString);
             String columnName = columnResult.getValue("columnName").stringValue();
-
-            //TupleQueryResult foreignKeyList = this.ontologyFactory.getForeignKeyResults(columnClassUriString);
-            //todo fix when column is FK column
 
             IRI columnRowIRI = vf.createIRI(tableRowIRI.stringValue() + "/" + columnName.replaceAll(" ", "_"));
             String literalValue = rowResults.getString(columnName);
