@@ -2,6 +2,7 @@ package nl.um.cds.triplifier.rdf;
 
 import nl.um.cds.triplifier.ForeignKeySpecification;
 import nl.um.cds.triplifier.rdf.ontology.DBO;
+import org.apache.log4j.Logger;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.ValueFactory;
@@ -33,6 +34,7 @@ public class OntologyFactory {
     private RepositoryConnection conn = null;
     private String baseIri = "";
     private ValueFactory vf = SimpleValueFactory.getInstance();
+    private Logger logger = Logger.getLogger(this.getClass());
 
     public OntologyFactory(String baseIri) {
         this.baseIri = baseIri;
@@ -142,25 +144,38 @@ public class OntologyFactory {
     }
 
     public TupleQueryResult getTablesFromOntology() {
-        TupleQuery tq = this.conn.prepareTupleQuery("PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?tableClass rdfs:subClassOf dbo:TableRow. OPTIONAL { ?tableClass dbo:schema ?schema. }. OPTIONAL { ?tableClass dbo:catalog ?catalog. }. ?tableClass dbo:table ?tableName. }");
+        String sparqlQuery = "PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?tableClass rdfs:subClassOf dbo:TableRow. OPTIONAL { ?tableClass dbo:schema ?schema. }. OPTIONAL { ?tableClass dbo:catalog ?catalog. }. ?tableClass dbo:table ?tableName. }";
+        logger.debug(sparqlQuery);
+        TupleQuery tq = this.conn.prepareTupleQuery(sparqlQuery);
         TupleQueryResult result = tq.evaluate();
         return result;
     }
 
     public TupleQueryResult getColumnsForTableFromOntology(String tableClassUri) {
-        TupleQuery tq = this.conn.prepareTupleQuery("PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?columnClassUri dbo:table <"+tableClassUri+">. ?columnClassUri dbo:column ?columnName. }");
+        String sparqlQuery = "PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?columnClassUri dbo:table <"+tableClassUri+">. ?columnClassUri dbo:column ?columnName. }";
+        logger.debug(sparqlQuery);
+        TupleQuery tq = this.conn.prepareTupleQuery(sparqlQuery);
         TupleQueryResult result = tq.evaluate();
         return result;
     }
 
-    public TupleQueryResult getForeignKeyResults(String columnClassUri) {
-        TupleQuery tq = this.conn.prepareTupleQuery("PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?columnClassUri rdfs:subClassOf* dbo:ForeignKey. ?fkPredicate rdfs:domain ?columnClassUri. ?fkPredicate rdfs:range ?targetClassUri. BIND (<"+columnClassUri+"> AS ?columnClassUri). }");
+    public TupleQueryResult getForeignKeys() {
+        String sparqlQuery = "PREFIX dbo: <" + DBO.NAMESPACE + "> \n" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
+                "SELECT * WHERE { \n" +
+                "            ?fkPredicate rdfs:subPropertyOf dbo:ColumnReference. \n" +
+                "            ?fkPredicate rdfs:domain ?columnClassUri. \n" +
+                "            ?fkPredicate rdfs:range ?targetClassUri. }";
+        logger.debug(sparqlQuery);
+        TupleQuery tq = this.conn.prepareTupleQuery(sparqlQuery);
         TupleQueryResult result = tq.evaluate();
         return result;
     }
 
     public TupleQueryResult getPrimaryKeysForTableFromOntology(String tableClassUri) {
-        TupleQuery tq = this.conn.prepareTupleQuery("PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?columnClassUri dbo:table <"+tableClassUri+">. ?columnClassUri dbo:column ?columnName. ?columnClassUri rdfs:subClassOf* dbo:PrimaryKey. }");
+        String sparqlQuery = "PREFIX dbo: <" + DBO.NAMESPACE + "> SELECT * WHERE { ?columnClassUri dbo:table <"+tableClassUri+">. ?columnClassUri dbo:column ?columnName. ?columnClassUri rdfs:subClassOf* dbo:PrimaryKey. }";
+        logger.debug(sparqlQuery);
+        TupleQuery tq = this.conn.prepareTupleQuery(sparqlQuery);
         TupleQueryResult result = tq.evaluate();
         return result;
     }
