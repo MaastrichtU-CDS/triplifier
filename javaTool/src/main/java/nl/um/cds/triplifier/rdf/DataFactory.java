@@ -63,8 +63,8 @@ public class DataFactory {
                 HTTPRepository httpRepo = new HTTPRepository(repoUrl, repoId);
                 if (!("".equals(repoUser) || repoUser == null)) {
                     httpRepo.setUsernameAndPassword(repoUser, repoPass);
-                    this.repo = httpRepo;
                 }
+                this.repo = httpRepo;
                 break;
             case "sparql":
                 this.repo = new SPARQLRepository(repoUrl);
