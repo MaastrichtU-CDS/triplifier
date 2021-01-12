@@ -24,6 +24,7 @@ public class MainApp {
         String outputFilePath = "output.ttl";
         boolean ontologyParsing = true;
         boolean dataParsing = true;
+        boolean clearDataGraph = false;
 
         String jdbcDriver = "";
         String jdbcUrl = "";
@@ -50,6 +51,8 @@ public class MainApp {
                 ontologyFilePath = args[i + 1];
             } else if ("-b".equals(args[i])) {
                 baseUri = args[i + 1];
+            } else if ("-c".equals(args[i])) {
+                clearDataGraph = true;
             } else if ("--ontologyAndOrData".equals(args[i])) {
                 if ("ontology".equals(args[i+1])) {
                     dataParsing = false;
@@ -86,6 +89,7 @@ public class MainApp {
             of = new OntologyFactory(baseUri);
         }
         DataFactory df = new DataFactory(of, repoType, repoUrl, repoId, repoUser, repoPass);
+        if (clearDataGraph) { df.dropDataGraph(); }
 
         try {
             if(ontologyParsing) {

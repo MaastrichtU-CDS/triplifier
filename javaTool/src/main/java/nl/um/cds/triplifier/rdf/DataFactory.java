@@ -3,9 +3,7 @@ package nl.um.cds.triplifier.rdf;
 import nl.um.cds.triplifier.rdf.ontology.DBO;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.rdf4j.model.IRI;
-import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.ValueFactory;
+import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.query.BindingSet;
@@ -38,6 +36,7 @@ public class DataFactory {
     private String baseIri = "";
     private ValueFactory vf = SimpleValueFactory.getInstance();
     private static Logger logger = Logger.getLogger(DataFactory.class);
+    private IRI context = null;
 
     public DataFactory(OntologyFactory ontologyFactory, String repoType, String repoUrl, String repoId, String repoUser, String repoPass) {
         String hostname = "localhost";
@@ -49,6 +48,7 @@ public class DataFactory {
 
         this.baseIri = "http://" + hostname + "/rdf/data/";
         this.ontologyFactory = ontologyFactory;
+        this.context = vf.createIRI("http://data.local/");
         this.initialize(repoType, repoUrl, repoId, repoUser, repoPass);
     }
 
@@ -73,6 +73,14 @@ public class DataFactory {
         this.conn = repo.getConnection();
 
         this.conn.setNamespace("data", this.baseIri);
+    }
+
+    private void addStatement(Resource subject, IRI predicate, IRI object) {
+        this.conn.add(subject, predicate, object, this.context);
+    }
+
+    private void addStatement(Resource subject, IRI predicate, Value object) {
+        this.conn.add(subject, predicate, object, this.context);
     }
 
     public void convertData(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) {
@@ -105,6 +113,11 @@ public class DataFactory {
         }
 
         generateForeignKeyRelations();
+    }
+
+    public void dropDataGraph() {
+        logger.info("Clearing context " + this.context.stringValue());
+        this.conn.clear(this.context);
     }
 
     private void generateForeignKeyRelations() {
@@ -152,7 +165,7 @@ public class DataFactory {
             while(sqlQueryResult.next()) {
                 IRI tableRowIRI = this.getTableRowIRI(tableName, tableClassUri, resultRowId, sqlQueryResult);
 
-                this.conn.add(tableRowIRI, RDF.TYPE, vf.createIRI(tableClassUri));
+                this.addStatement(tableRowIRI, RDF.TYPE, vf.createIRI(tableClassUri));
                 this.processColumns(sqlQueryResult, tableClassUri, tableRowIRI);
 
                 resultRowId++;
@@ -201,16 +214,16 @@ public class DataFactory {
             IRI columnRowIRI = vf.createIRI(tableRowIRI.stringValue() + "/" + columnName.replaceAll(" ", "_"));
             String literalValue = rowResults.getString(columnName);
 
-            this.conn.add(columnRowIRI, RDF.TYPE, columnClassUri);
-            this.conn.add(tableRowIRI, DBO.HAS_COLUMN, columnRowIRI);
+            this.addStatement(columnRowIRI, RDF.TYPE, columnClassUri);
+            this.addStatement(tableRowIRI, DBO.HAS_COLUMN, columnRowIRI);
             // if there's no literal value for this column, then we can skip the creation of the column instance?
             if(literalValue != null) {
                 IRI columnRowIRIValue = vf.createIRI(columnRowIRI.stringValue() + "/value");
-                this.conn.add(columnRowIRI, DBO.HAS_CELL, columnRowIRIValue);
+                this.addStatement(columnRowIRI, DBO.HAS_CELL, columnRowIRIValue);
 
                 literalValue = StringEscapeUtils.escapeHtml(literalValue);
-                this.conn.add(columnRowIRIValue, RDF.TYPE, DBO.DATABASECELL);
-                this.conn.add(columnRowIRIValue, DBO.HAS_VALUE, vf.createLiteral(literalValue));
+                this.addStatement(columnRowIRIValue, RDF.TYPE, DBO.DATABASECELL);
+                this.addStatement(columnRowIRIValue, DBO.HAS_VALUE, vf.createLiteral(literalValue));
             }
         }
     }
