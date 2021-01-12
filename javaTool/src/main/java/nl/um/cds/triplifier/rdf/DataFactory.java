@@ -1,6 +1,5 @@
 package nl.um.cds.triplifier.rdf;
 
-import nl.um.cds.triplifier.DatabaseInspector;
 import nl.um.cds.triplifier.rdf.ontology.DBO;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -206,8 +205,12 @@ public class DataFactory {
             this.conn.add(tableRowIRI, DBO.HAS_COLUMN, columnRowIRI);
             // if there's no literal value for this column, then we can skip the creation of the column instance?
             if(literalValue != null) {
+                IRI columnRowIRIValue = vf.createIRI(columnRowIRI.stringValue() + "/value");
+                this.conn.add(columnRowIRI, DBO.HAS_CELL, columnRowIRIValue);
+
                 literalValue = StringEscapeUtils.escapeHtml(literalValue);
-                this.conn.add(columnRowIRI, DBO.HAS_VALUE, vf.createLiteral(literalValue));
+                this.conn.add(columnRowIRIValue, RDF.TYPE, DBO.DATABASECELL);
+                this.conn.add(columnRowIRIValue, DBO.HAS_VALUE, vf.createLiteral(literalValue));
             }
         }
     }

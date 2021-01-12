@@ -11,11 +11,13 @@ public class DBO {
     public static final String NAMESPACE = "http://um-cds/ontologies/databaseontology/";
     public static final IRI DATABASETABLE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "TableRow");
     public static final IRI DATABASECOLUMN = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "ColumnCell");
+    public static final IRI DATABASECELL = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "Cell");
     public static final IRI PRIMARYKEY = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "PrimaryKey");
     public static final IRI FOREIGNKEY = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "ForeignKey");
 
     public static final IRI HAS_COLUMN = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "has_column");
     public static final IRI HAS_VALUE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "has_value");
+    public static final IRI HAS_CELL = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "has_cell");
     public static final IRI HAS_UNIT = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "has_unit");
     public static final IRI COLUMNREFERENCE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "ColumnReference");
 
@@ -38,8 +40,12 @@ public class DBO {
         conn.add(HAS_COLUMN, RDFS.DOMAIN, DATABASETABLE);
         conn.add(HAS_COLUMN, RDFS.RANGE, DATABASECOLUMN);
 
-        conn.add(HAS_VALUE, RDF.TYPE, OWL.DATATYPEPROPERTY);
+        conn.add(HAS_VALUE, RDF.TYPE, OWL.OBJECTPROPERTY);
         conn.add(HAS_VALUE, RDFS.DOMAIN, DATABASECOLUMN);
+        conn.add(HAS_VALUE, RDFS.RANGE, DATABASECELL);
+
+        conn.add(HAS_CELL, RDF.TYPE, OWL.DATATYPEPROPERTY);
+        conn.add(HAS_CELL, RDFS.DOMAIN, DATABASECOLUMN);
         conn.add(HAS_UNIT, RDF.TYPE, OWL.ANNOTATIONPROPERTY);
         conn.add(HAS_UNIT, RDFS.DOMAIN, DATABASECOLUMN);
 
