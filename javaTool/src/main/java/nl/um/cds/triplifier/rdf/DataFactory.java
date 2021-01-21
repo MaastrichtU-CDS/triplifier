@@ -19,7 +19,6 @@ import org.eclipse.rdf4j.rio.RDFHandler;
 import org.eclipse.rdf4j.rio.ntriples.NTriplesWriter;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -32,11 +31,11 @@ import java.net.InetAddress;
 public class DataFactory {
     private Repository repo = null;
     private RepositoryConnection conn = null;
-    private OntologyFactory ontologyFactory = null;
-    private String baseIri = "";
-    private ValueFactory vf = SimpleValueFactory.getInstance();
-    private static Logger logger = Logger.getLogger(DataFactory.class);
-    private IRI context = null;
+    private final OntologyFactory ontologyFactory;
+    private final String baseIri;
+    private final ValueFactory vf = SimpleValueFactory.getInstance();
+    private static final Logger logger = Logger.getLogger(DataFactory.class);
+    private final IRI context;
 
     public DataFactory(OntologyFactory ontologyFactory, String repoType, String repoUrl, String repoId, String repoUser, String repoPass) {
         String hostname = "localhost";
@@ -75,14 +74,6 @@ public class DataFactory {
         this.conn.setNamespace("data", this.baseIri);
     }
 
-    private void addStatement(Resource subject, IRI predicate, IRI object) {
-        this.conn.add(subject, predicate, object, this.context);
-    }
-
-    private void addStatement(Resource subject, IRI predicate, Value object) {
-        this.conn.add(subject, predicate, object, this.context);
-    }
-
     public void convertData(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) {
         try {
             Connection conn = this.connectDatabase(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
@@ -106,9 +97,7 @@ public class DataFactory {
                 this.processTable(conn, tableClassUri, tableName, catalog, schema);
             }
 
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
 
@@ -162,11 +151,16 @@ public class DataFactory {
 
             int resultRowId = 0;
             int numberRows = sqlQueryResult.getFetchSize();
+            StatementCollector collector = new StatementCollector(this.context);
+
             while(sqlQueryResult.next()) {
                 IRI tableRowIRI = this.getTableRowIRI(tableName, tableClassUri, resultRowId, sqlQueryResult);
 
-                this.addStatement(tableRowIRI, RDF.TYPE, vf.createIRI(tableClassUri));
-                this.processColumns(sqlQueryResult, tableClassUri, tableRowIRI);
+                collector.addStatement(tableRowIRI, RDF.TYPE, vf.createIRI(tableClassUri));
+                this.processColumns(sqlQueryResult, tableClassUri, tableRowIRI, collector);
+
+                this.conn.add(collector.getStatements());
+                collector.clearList();
 
                 resultRowId++;
                 logger.debug("Processed row " + resultRowId + " of " + numberRows);
@@ -202,7 +196,7 @@ public class DataFactory {
         return tableRowIRI;
     }
 
-    private void processColumns(ResultSet rowResults, String tableClassUri, IRI tableRowIRI) throws SQLException {
+    private void processColumns(ResultSet rowResults, String tableClassUri, IRI tableRowIRI, StatementCollector collector) throws SQLException {
         TupleQueryResult columnList = this.ontologyFactory.getColumnsForTableFromOntology(tableClassUri);
         while(columnList.hasNext()) {
             BindingSet columnResult = columnList.next();
@@ -214,16 +208,16 @@ public class DataFactory {
             IRI columnRowIRI = vf.createIRI(tableRowIRI.stringValue() + "/" + columnName.replaceAll(" ", "_"));
             String literalValue = rowResults.getString(columnName);
 
-            this.addStatement(columnRowIRI, RDF.TYPE, columnClassUri);
-            this.addStatement(tableRowIRI, DBO.HAS_COLUMN, columnRowIRI);
+            collector.addStatement(columnRowIRI, RDF.TYPE, columnClassUri);
+            collector.addStatement(tableRowIRI, DBO.HAS_COLUMN, columnRowIRI);
             // if there's no literal value for this column, then we can skip the creation of the column instance?
             if(literalValue != null) {
                 IRI columnRowIRIValue = vf.createIRI(columnRowIRI.stringValue() + "/value");
-                this.addStatement(columnRowIRI, DBO.HAS_CELL, columnRowIRIValue);
+                collector.addStatement(columnRowIRI, DBO.HAS_CELL, columnRowIRIValue);
 
                 literalValue = StringEscapeUtils.escapeHtml(literalValue);
-                this.addStatement(columnRowIRIValue, RDF.TYPE, DBO.DATABASECELL);
-                this.addStatement(columnRowIRIValue, DBO.HAS_VALUE, vf.createLiteral(literalValue));
+                collector.addStatement(columnRowIRIValue, RDF.TYPE, DBO.DATABASECELL);
+                collector.addStatement(columnRowIRIValue, DBO.HAS_VALUE, vf.createLiteral(literalValue));
             }
         }
     }
@@ -238,7 +232,7 @@ public class DataFactory {
         return connection;
     }
 
-    public void exportData(String filePathName) throws FileNotFoundException, IOException {
+    public void exportData(String filePathName) throws IOException {
         RepositoryResult<Statement> result = this.conn.getStatements(null, null, null, true);
         FileOutputStream fos = new FileOutputStream(filePathName);
 
