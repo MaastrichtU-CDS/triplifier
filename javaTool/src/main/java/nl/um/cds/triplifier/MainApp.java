@@ -1,10 +1,12 @@
 package nl.um.cds.triplifier;
 
+import nl.um.cds.triplifier.rdf.AnnotationFactory;
 import nl.um.cds.triplifier.rdf.DataFactory;
 import nl.um.cds.triplifier.rdf.OntologyFactory;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.eclipse.rdf4j.model.Statement;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,7 +68,15 @@ public class MainApp {
             of = new OntologyFactory(baseUri, props);
         }
         DataFactory df = new DataFactory(of, props);
-        if (clearDataGraph) { df.dropDataGraph(); }
+        AnnotationFactory af = new AnnotationFactory(props);
+
+        if (clearDataGraph) {
+            List<Statement> ontologyStatements = of.getAllStatementsInContext();
+            List<Statement> annotationStatements = af.getAllStatementsInContext();
+            df.clearData(true);
+            of.addStatements(ontologyStatements);
+            af.addStatements(annotationStatements);
+        }
 
         try {
             if(ontologyParsing) {

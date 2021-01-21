@@ -2,11 +2,13 @@ package nl.um.cds.triplifier.rdf;
 
 import org.apache.log4j.Logger;
 import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
@@ -14,6 +16,8 @@ import org.eclipse.rdf4j.sail.memory.MemoryStore;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 abstract class RdfFactory {
@@ -39,9 +43,33 @@ abstract class RdfFactory {
         return hostname;
     }
 
-    public void dropDataGraph() {
-        logger.info("Clearing context " + this.context.stringValue());
-        this.conn.clear(this.context);
+    /**
+     * Clear the repository, or only the given context (which is the actual scope of the factory)
+     * @param completeRepository boolean indicating to clean the whole repository (value = true) or only the current context/graph (value = false)
+     */
+    public void clearData(boolean completeRepository) {
+        if (completeRepository) {
+            logger.info("Clearing whole repository");
+            this.conn.clear();
+        } else {
+            logger.info("Clearing context " + this.context.stringValue());
+            this.conn.clear(this.context);
+        }
+    }
+
+    /**
+     * Return all statements within the set context. If context is not given, all statements in repository are returned.
+     * @return List object containing Statement instances
+     */
+    public List<Statement> getAllStatementsInContext() {
+        RepositoryResult<Statement> statements = this.conn.getStatements(null, null, null, this.context);
+        List<Statement> returnStatements = new ArrayList<Statement>();
+
+        while(statements.hasNext()) {
+            returnStatements.add(statements.next());
+        }
+
+        return returnStatements;
     }
 
     void addStatement(IRI subject, IRI predicate, IRI object) {
@@ -58,6 +86,14 @@ abstract class RdfFactory {
         } else {
             this.conn.add(this.vf.createStatement(subject, predicate, object));
         }
+    }
+
+    /**
+     * Add multiple statements to current repository (and current context if given in class constructor)
+     * @param statements List of statements to be added
+     */
+    public void addStatements(Iterable<Statement> statements) {
+        this.conn.add(statements, this.context);
     }
 
     String getProperty(String key) {
