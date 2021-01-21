@@ -5,51 +5,43 @@ import nl.um.cds.triplifier.rdf.ontology.DBO;
 import org.apache.log4j.Logger;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
-import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQuery;
 import org.eclipse.rdf4j.query.TupleQueryResult;
-import org.eclipse.rdf4j.repository.Repository;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
-import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.rio.RDFHandler;
 import org.eclipse.rdf4j.rio.rdfxml.RDFXMLWriter;
-import org.eclipse.rdf4j.sail.memory.MemoryStore;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
-public class OntologyFactory {
-    private Repository repo = null;
-    private RepositoryConnection conn = null;
+public class OntologyFactory extends RdfFactory{
     private String baseIri = "";
-    private ValueFactory vf = SimpleValueFactory.getInstance();
     private Logger logger = Logger.getLogger(this.getClass());
 
-    public OntologyFactory(String baseIri) {
+    public OntologyFactory(String baseIri, Properties props) {
+        this(props);
         this.baseIri = baseIri;
         this.initialize();
     }
 
-    public OntologyFactory() {
-        this("http://localhost/rdf/ontology/");
+    public OntologyFactory(Properties props) {
+        super(props);
+
+        String hostname = getHostname();
+        this.baseIri = "http://" + hostname + "/rdf/ontology/";
+
+        this.initialize();
     }
 
     private void initialize() {
-        this.repo = new SailRepository(new MemoryStore());
-        this.repo.init();
-        this.conn = repo.getConnection();
-
+        this.initializeRdfStore();
+        this.context = vf.createIRI("http://ontology.local/");
         this.conn.setNamespace("db", this.baseIri);
         DBO.addOntologyToDatabaseConnection(this.conn);
     }
@@ -57,16 +49,16 @@ public class OntologyFactory {
     public void processTable(String tableName, List<String> columns, List<String> primaryKeys, List<ForeignKeySpecification> foreignKeys, String schemaName, String catalogName) {
         IRI tableClassIRI = this.getClassForTable(tableName);
 
-        this.conn.add(tableClassIRI, RDF.TYPE, OWL.CLASS);
-        this.conn.add(tableClassIRI, RDFS.SUBCLASSOF, DBO.DATABASETABLE);
-        this.conn.add(tableClassIRI, RDFS.LABEL, vf.createLiteral(tableName));
+        this.addStatement(tableClassIRI, RDF.TYPE, OWL.CLASS);
+        this.addStatement(tableClassIRI, RDFS.SUBCLASSOF, DBO.DATABASETABLE);
+        this.addStatement(tableClassIRI, RDFS.LABEL, vf.createLiteral(tableName));
 
-        this.conn.add(tableClassIRI, DBO.TABLE, vf.createLiteral(tableName));
+        this.addStatement(tableClassIRI, DBO.TABLE, vf.createLiteral(tableName));
         if(catalogName != null) {
-            this.conn.add(tableClassIRI, DBO.CATALOG, vf.createLiteral(catalogName));
+            this.addStatement(tableClassIRI, DBO.CATALOG, vf.createLiteral(catalogName));
         }
         if(schemaName != null) {
-            this.conn.add(tableClassIRI, DBO.SCHEMA, vf.createLiteral(schemaName));
+            this.addStatement(tableClassIRI, DBO.SCHEMA, vf.createLiteral(schemaName));
         }
 
         for(String column : columns) {
@@ -80,12 +72,12 @@ public class OntologyFactory {
     private IRI addColumn(String tableName, String column) {
         IRI columnClassIRI = this.getClassForColumn(tableName, column);
 
-        this.conn.add(columnClassIRI, RDF.TYPE, OWL.CLASS);
-        this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, DBO.DATABASECOLUMN);
-        this.conn.add(columnClassIRI, RDFS.LABEL, vf.createLiteral(tableName + "." + column));
+        this.addStatement(columnClassIRI, RDF.TYPE, OWL.CLASS);
+        this.addStatement(columnClassIRI, RDFS.SUBCLASSOF, DBO.DATABASECOLUMN);
+        this.addStatement(columnClassIRI, RDFS.LABEL, vf.createLiteral(tableName + "." + column));
 
-        this.conn.add(columnClassIRI, DBO.TABLE, this.getClassForTable(tableName));
-        this.conn.add(columnClassIRI, DBO.COLUMN, vf.createLiteral(column));
+        this.addStatement(columnClassIRI, DBO.TABLE, this.getClassForTable(tableName));
+        this.addStatement(columnClassIRI, DBO.COLUMN, vf.createLiteral(column));
 
         return columnClassIRI;
     }
@@ -93,7 +85,7 @@ public class OntologyFactory {
     private void addPrimaryKeys(String tableName, List<String> primaryKeys) {
         for(String pKeyColumn : primaryKeys) {
             IRI columnClassIRI = this.getClassForColumn(tableName, pKeyColumn);
-            this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, DBO.PRIMARYKEY);
+            this.addStatement(columnClassIRI, RDFS.SUBCLASSOF, DBO.PRIMARYKEY);
         }
     }
 
@@ -101,23 +93,23 @@ public class OntologyFactory {
 
         for(ForeignKeySpecification fKeyColumn : foreignKeys) {
             IRI columnClassIRI = this.getClassForColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn());
-            this.conn.add(columnClassIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
+            this.addStatement(columnClassIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
 
             String predicateName = fKeyColumn.getForeignKeyTable() + "_" + fKeyColumn.getForeignKeyColumn() + "_refersTo_" + fKeyColumn.getPrimaryKeyTable() + "_" + fKeyColumn.getPrimaryKeyColumn();
             String predicateLabel = fKeyColumn.getForeignKeyTable() + "." + fKeyColumn.getForeignKeyColumn() + " refers to " + fKeyColumn.getPrimaryKeyTable() + "." + fKeyColumn.getPrimaryKeyColumn();
 
             IRI predicateIRI = vf.createIRI(this.baseIri, predicateName);
-            this.conn.add(predicateIRI, RDF.TYPE, OWL.OBJECTPROPERTY);
-            this.conn.add(predicateIRI, RDFS.LABEL, vf.createLiteral(predicateLabel));
-            this.conn.add(predicateIRI, RDFS.SUBPROPERTYOF, DBO.COLUMNREFERENCE);
+            this.addStatement(predicateIRI, RDF.TYPE, OWL.OBJECTPROPERTY);
+            this.addStatement(predicateIRI, RDFS.LABEL, vf.createLiteral(predicateLabel));
+            this.addStatement(predicateIRI, RDFS.SUBPROPERTYOF, DBO.COLUMNREFERENCE);
 
             IRI sourceIRI = this.addColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn());
             //create target IRI to be sure it exists
             IRI targetIRI = this.addColumn(fKeyColumn.getPrimaryKeyTable(), fKeyColumn.getPrimaryKeyColumn());
-            this.conn.add(sourceIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
+            this.addStatement(sourceIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
 
-            this.conn.add(predicateIRI, RDFS.DOMAIN, sourceIRI);
-            this.conn.add(predicateIRI, RDFS.RANGE, targetIRI);
+            this.addStatement(predicateIRI, RDFS.DOMAIN, sourceIRI);
+            this.addStatement(predicateIRI, RDFS.RANGE, targetIRI);
         }
     }
 

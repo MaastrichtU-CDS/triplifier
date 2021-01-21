@@ -3,18 +3,18 @@ package nl.um.cds.triplifier;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DatabaseInspector {
     private Connection connection = null;
     private DatabaseMetaData dbMetaData = null;
     private static Logger logger = Logger.getLogger(DatabaseInspector.class);
 
-    public DatabaseInspector(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) {
-        this.connectDatabase(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
+    public DatabaseInspector(Properties props) {
+        this.connectDatabase(props.getProperty("jdbc.driver"),
+                props.getProperty("jdbc.url"),
+                props.getProperty("jdbc.user"),
+                props.getProperty("jdbc.password"));
     }
 
     private void connectDatabase(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) {

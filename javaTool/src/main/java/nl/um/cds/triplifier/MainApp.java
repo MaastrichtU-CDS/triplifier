@@ -8,7 +8,6 @@ import org.apache.log4j.PropertyConfigurator;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 import java.util.List;
@@ -25,17 +24,7 @@ public class MainApp {
         boolean ontologyParsing = true;
         boolean dataParsing = true;
         boolean clearDataGraph = false;
-
-        String jdbcDriver = "";
-        String jdbcUrl = "";
-        String jdbcUser = "";
-        String jdbcPass = "";
-
-        String repoType = "memory";
-        String repoUrl = "";
-        String repoId = "";
-        String repoUser = "";
-        String repoPass = "";
+        Properties props = new Properties();
 
         String baseUri = null;
 
@@ -62,39 +51,27 @@ public class MainApp {
             }
         }
 
-        Properties props = new Properties();
         try {
             logger.debug(new File(propertiesFilePath).getAbsolutePath());
             FileInputStream fis = new FileInputStream(new File(propertiesFilePath));
             props.load(fis);
-
-            jdbcDriver = props.getProperty("jdbc.driver");
-            jdbcUrl = props.getProperty("jdbc.url");
-            jdbcUser = props.getProperty("jdbc.user");
-            jdbcPass = props.getProperty("jdbc.password");
-
-            repoType = props.getProperty("repo.type");
-            repoUrl = props.getProperty("repo.url");
-            repoId = props.getProperty("repo.id");
-            repoUser = props.getProperty("repo.user");
-            repoPass = props.getProperty("repo.pass");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
+            logger.error("Could not find properties file (" + propertiesFilePath + ", or specified using the -p argument).");
+            System.exit(1);
             e.printStackTrace();
         }
 
-        OntologyFactory of = new OntologyFactory();
+        OntologyFactory of = new OntologyFactory(props);
         if(baseUri != null) {
-            of = new OntologyFactory(baseUri);
+            of = new OntologyFactory(baseUri, props);
         }
-        DataFactory df = new DataFactory(of, repoType, repoUrl, repoId, repoUser, repoPass);
+        DataFactory df = new DataFactory(of, props);
         if (clearDataGraph) { df.dropDataGraph(); }
 
         try {
             if(ontologyParsing) {
                 logger.info("Start extracting ontology: " + System.currentTimeMillis());
-                DatabaseInspector dbInspect = new DatabaseInspector(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
+                DatabaseInspector dbInspect = new DatabaseInspector(props);
                 createOntology(dbInspect, of, ontologyFilePath);
                 logger.info("Done extracting ontology: " + System.currentTimeMillis());
                 logger.info("Ontology exported to " + ontologyFilePath);
@@ -102,8 +79,8 @@ public class MainApp {
 
             if(dataParsing) {
                 logger.info("Start extracting data: " + System.currentTimeMillis());
-                df.convertData(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
-                if ("memory".equals(repoType)) {
+                df.convertData();
+                if ("memory".equals(props.getProperty("repo.type"))) {
                     logger.info("Start exporting data file: " + System.currentTimeMillis());
                     df.exportData(outputFilePath);
                     logger.info("Data exported to " + outputFilePath);
@@ -112,9 +89,7 @@ public class MainApp {
 
             }
         } catch (SQLException e) {
-            logger.error("Could not connect to database with url " + jdbcUrl);
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
+            logger.error("Could not connect to database with url " + props.getProperty("jdbc.url"));
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();

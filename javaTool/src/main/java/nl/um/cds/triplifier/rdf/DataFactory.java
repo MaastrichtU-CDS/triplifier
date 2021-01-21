@@ -4,79 +4,49 @@ import nl.um.cds.triplifier.rdf.ontology.DBO;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.rdf4j.model.*;
-import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.query.Update;
-import org.eclipse.rdf4j.repository.Repository;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
-import org.eclipse.rdf4j.repository.http.HTTPRepository;
-import org.eclipse.rdf4j.repository.sail.SailRepository;
-import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
 import org.eclipse.rdf4j.rio.RDFHandler;
 import org.eclipse.rdf4j.rio.ntriples.NTriplesWriter;
-import org.eclipse.rdf4j.sail.memory.MemoryStore;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.net.InetAddress;
+import java.util.Properties;
 
-public class DataFactory {
-    private Repository repo = null;
-    private RepositoryConnection conn = null;
+public class DataFactory extends RdfFactory{
     private final OntologyFactory ontologyFactory;
     private final String baseIri;
-    private final ValueFactory vf = SimpleValueFactory.getInstance();
     private static final Logger logger = Logger.getLogger(DataFactory.class);
-    private final IRI context;
 
-    public DataFactory(OntologyFactory ontologyFactory, String repoType, String repoUrl, String repoId, String repoUser, String repoPass) {
-        String hostname = "localhost";
-        try {
-            hostname = InetAddress.getLocalHost().getCanonicalHostName();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+    public DataFactory(OntologyFactory ontologyFactory, Properties props) {
+        super(props);
+        String hostname = super.getHostname();
 
         this.baseIri = "http://" + hostname + "/rdf/data/";
         this.ontologyFactory = ontologyFactory;
-        this.context = vf.createIRI("http://data.local/");
-        this.initialize(repoType, repoUrl, repoId, repoUser, repoPass);
+        this.initialize();
     }
 
-    private void initialize(String repoType, String repoUrl, String repoId, String repoUser, String repoPass) {
-        switch (repoType) {
-            case "memory":
-                this.repo = new SailRepository(new MemoryStore());
-                this.repo.init();
-                break;
-            case "rdf4j":
-                HTTPRepository httpRepo = new HTTPRepository(repoUrl, repoId);
-                if (!("".equals(repoUser) || repoUser == null)) {
-                    httpRepo.setUsernameAndPassword(repoUser, repoPass);
-                }
-                this.repo = httpRepo;
-                break;
-            case "sparql":
-                this.repo = new SPARQLRepository(repoUrl);
-                break;
-        }
-
-        this.conn = repo.getConnection();
-
+    private void initialize(){
+        this.initializeRdfStore();
+        this.context = vf.createIRI("http://data.local/");
         this.conn.setNamespace("data", this.baseIri);
     }
 
-    public void convertData(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass) {
+    public void convertData() {
         try {
-            Connection conn = this.connectDatabase(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass);
+            Connection conn = this.connectDatabase(
+                    this.getProperty("jdbc.driver"),
+                    this.getProperty("jdbc.url"),
+                    this.getProperty("jdbc.user"),
+                    this.getProperty("jdbc.password"));
 
             TupleQueryResult tableList = this.ontologyFactory.getTablesFromOntology();
             while(tableList.hasNext()) {
@@ -102,11 +72,6 @@ public class DataFactory {
         }
 
         generateForeignKeyRelations();
-    }
-
-    public void dropDataGraph() {
-        logger.info("Clearing context " + this.context.stringValue());
-        this.conn.clear(this.context);
     }
 
     private void generateForeignKeyRelations() {
