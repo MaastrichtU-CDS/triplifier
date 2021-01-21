@@ -101,17 +101,13 @@ abstract class RdfFactory {
     }
 
     void initializeRdfStore() {
-        String repoType = props.getProperty("repo.type");
+        String repoType = props.getProperty("repo.type", "");
         String repoUrl = props.getProperty("repo.url");
         String repoId = props.getProperty("repo.id");
         String repoUser = props.getProperty("repo.user");
         String repoPass = props.getProperty("repo.password");
 
         switch (repoType) {
-            case "memory":
-                this.repo = new SailRepository(new MemoryStore());
-                this.repo.init();
-                break;
             case "rdf4j":
                 HTTPRepository httpRepo = new HTTPRepository(repoUrl, repoId);
                 if (!("".equals(repoUser) || repoUser == null)) {
@@ -121,6 +117,11 @@ abstract class RdfFactory {
                 break;
             case "sparql":
                 this.repo = new SPARQLRepository(repoUrl);
+                break;
+            case "memory":
+            default:
+                this.repo = new SailRepository(new MemoryStore());
+                this.repo.init();
                 break;
         }
 

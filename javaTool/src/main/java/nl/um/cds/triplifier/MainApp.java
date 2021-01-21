@@ -90,7 +90,7 @@ public class MainApp {
             if(dataParsing) {
                 logger.info("Start extracting data: " + System.currentTimeMillis());
                 df.convertData();
-                if ("memory".equals(props.getProperty("repo.type"))) {
+                if ("memory".equals(props.getProperty("repo.type", "memory"))) {
                     logger.info("Start exporting data file: " + System.currentTimeMillis());
                     df.exportData(outputFilePath);
                     logger.info("Data exported to " + outputFilePath);
