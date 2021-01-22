@@ -12,10 +12,6 @@ RUN python3 -m pip install rdflib requests
 # install ontop libraries
 COPY javaTool/target/triplifier-1.0-SNAPSHOT-jar-with-dependencies.jar triplifier.jar
 
-# install python scripts
-RUN mkdir /pyScripts
-COPY pyScripts/uploadData.py /pyScripts/uploadData.py
-
 # install run script
 COPY run.sh /run.sh
 RUN dos2unix run.sh
