@@ -17,7 +17,7 @@ if [ $SLEEPTIME = 0 ]; then
 else
     while true
     do
-        java $XMX -jar -c triplifier.jar
+        java $XMX -jar triplifier.jar
         echo "================================== SLEEP =================================="
         sleep $SLEEPTIME
     done
