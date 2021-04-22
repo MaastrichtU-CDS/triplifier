@@ -13,7 +13,7 @@ fi
 
 ############ run script ############
 if [ $SLEEPTIME = 0 ]; then
-    java -jar triplifier.jar
+    java $XMX -jar triplifier.jar
 else
     while true
     do
