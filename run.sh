@@ -11,13 +11,19 @@ if [ -z "$XMX" ]; then
     export XMX
 fi
 
+if [ -z "$ARGUMENTS" ]; then
+    ARGUMENTS=""
+    echo "ARGUMENTS set to $ARGUMENTS"
+    export ARGUMENTS
+fi
+
 ############ run script ############
 if [ $SLEEPTIME = 0 ]; then
-    java $XMX -jar triplifier.jar
+    java $XMX -jar triplifier.jar -c $ARGUMENTS
 else
     while true
     do
-        java $XMX -jar triplifier.jar
+        java $XMX -jar triplifier.jar -c $ARGUMENTS
         echo "================================== SLEEP =================================="
         sleep $SLEEPTIME
     done

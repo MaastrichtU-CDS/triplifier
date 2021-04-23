@@ -44,7 +44,7 @@ public class MainApp {
                 baseUri = args[i + 1];
             } else if ("-c".equals(args[i])) {
                 clearDataGraph = true;
-            } else if ("--ontologyAndOrData".equals(args[i])) {
+            } else if ("--ontologyOrData".equals(args[i])) {
                 if ("ontology".equals(args[i+1])) {
                     dataParsing = false;
                 } else if("data".equals(args[i+1])) {
@@ -74,7 +74,9 @@ public class MainApp {
             List<Statement> ontologyStatements = of.getAllStatementsInContext();
             List<Statement> annotationStatements = af.getAllStatementsInContext();
             df.clearData(true);
-            of.addStatements(ontologyStatements);
+            if(!ontologyParsing) {
+                of.addStatements(ontologyStatements);
+            }
             af.addStatements(annotationStatements);
         }
 
