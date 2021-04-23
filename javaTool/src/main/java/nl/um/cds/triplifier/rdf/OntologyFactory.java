@@ -10,6 +10,7 @@ import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
 import org.eclipse.rdf4j.query.TupleQuery;
 import org.eclipse.rdf4j.query.TupleQueryResult;
+import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.rio.RDFHandler;
 import org.eclipse.rdf4j.rio.rdfxml.RDFXMLWriter;
@@ -39,7 +40,7 @@ public class OntologyFactory extends RdfFactory{
         this.initialize();
     }
 
-    private void initialize() {
+    private void initialize() throws RepositoryException {
         this.initializeRdfStore();
         this.context = vf.createIRI("http://ontology.local/");
         this.conn.setNamespace("db", this.baseIri);

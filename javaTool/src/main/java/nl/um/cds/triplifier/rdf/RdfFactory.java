@@ -8,6 +8,7 @@ import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
@@ -19,6 +20,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 abstract class RdfFactory {
     private Properties props;
@@ -100,7 +102,7 @@ abstract class RdfFactory {
         return props.getProperty(key);
     }
 
-    void initializeRdfStore() {
+    void initializeRdfStore() throws RepositoryException {
         String repoType = props.getProperty("repo.type", "");
         String repoUrl = props.getProperty("repo.url");
         String repoId = props.getProperty("repo.id");
@@ -126,5 +128,30 @@ abstract class RdfFactory {
         }
 
         this.conn = repo.getConnection();
+
+        int attempts = 0;
+        while (!this.connectionExists() && attempts < 10) {
+            attempts += 1;
+            logger.info("Could not connect to repository, waiting 10 seconds for a new attempt ("+ attempts +" of 10)");
+            try {
+                TimeUnit.SECONDS.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.conn = repo.getConnection();
+        }
+
+        if(!this.connectionExists()) {
+            throw new RepositoryException("Could not connect to " + repoUrl + " with repository ID " + repoId);
+        }
+    }
+
+    boolean connectionExists() {
+        try {
+            this.conn.getNamespaces();
+            return true;
+        } catch (RepositoryException ex) {
+            return false;
+        }
     }
 }
