@@ -71,7 +71,7 @@ public class DataFactory extends RdfFactory{
             e.printStackTrace();
         }
 
-        //generateForeignKeyRelations();
+        generateForeignKeyRelations();
     }
 
     private void generateForeignKeyRelations() {
