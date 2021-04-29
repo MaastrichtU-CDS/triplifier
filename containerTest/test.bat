@@ -8,4 +8,4 @@ docker run --rm --link postgresdb:dbhost ^
     -v %cd%\mapping.ttl:/mapping.ttl ^
     -v %cd%\output_reform.ttl:/output_reform.ttl ^
     -v %cd%\output.ttl:/output.ttl ^
-    jvsoest/test
+    registry.gitlab.com/um-cds/fair/tools/triplifier:remoteEndpoint
