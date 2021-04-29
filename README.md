@@ -46,12 +46,51 @@ jdbc.password = my_password
 jdbc.driver = com.microsoft.sqlserver.jdbc.SQLServerDriver
 ```
 
+**H2 database file**
+```
+jdbc.url = jdbc:h2:file:/db/database_file_name
+jdbc.user = sa
+jdbc.password = sa
+jdbc.driver = org.h2.Driver
+```
+
+**SQLite database file**
+```
+jdbc.url = jdbc:sqlite:/my.db
+jdbc.user = user
+jdbc.password = pass
+jdbc.driver = org.sqlite.JDBC
+```
+
 **Folder with CSV files**
 ```
 jdbc.url = jdbc:relique:csv:C:\\Users\\johan\\test?fileExtension=.csv
-jdbc.user = "user"
-jdbc.password = "pass"
+jdbc.user = user
+jdbc.password = pass
 jdbc.driver = org.relique.jdbc.csv.CsvDriver
+```
+
+### Upload triples to RDF endpoint
+
+To upload data directly into an RDF endpoint (and hence save the memory footprint), please add the following variables in the properties file (default: triplifier.properties):
+
+* *repo.type*: Indicating the type of RDF endpoint. The following values are allowed for this variable:
+    * "memory": this is the default, in-memory (and file-based) RDF/OWL output
+    * "sparql": upload the triples directly in a SPARQL endpoint using the SPARQL protocol
+    * "rdf4j": upload the triples directly in an RDF4j repository (e.g. a RDF4j or GraphDB database)
+* *repo.url*: the URL of the RDF endpoint (not applicable or needed for `repo.type = memory`). In case of a SPARQL endpoint, include the URL of the actual SPARQL endpoint. In case of RDF4j, indicate the URL of the repository server
+* *repo.id*: for `repo.type = rdf4j` indicate the repository ID
+* *repo.user*: optional, specify the username for password-protected rdf4j repositories
+* *repo.pass*: optional, specify the password for password-protected rdf4j repositories
+
+An example of the full specification is given below:
+
+```
+repo.type = rdf4j
+repo.url = http://localhost:7200
+repo.id = data
+repo.user = userNameTest
+repo.pass = test
 ```
 
 ### Optional arguments
@@ -60,6 +99,9 @@ By default, the tool will generate an ontology file (ontology.owl) and a turtle 
 
 * -o <output_path_for_materialized_triples_file>
 * -t <output_path_for_ontology_file>
+* -c
+* -b
+* --ontologyAndOrData [ontology|data]
 
 ## Run as Docker container
 
@@ -68,114 +110,34 @@ To run the triplifier as Docker container, you can run the following command:
 **On Linux/Unix/macOS systems:**
  ```
 docker run --rm \
-    -e DB_JDBC="jdbc:sqlserver://localhost;databaseName=my_database" \
-    -e DB_USER=my_username \
-    -e DB_PASS=my_password \
-    -e DB_DRIVER=com.microsoft.sqlserver.jdbc.SQLServerDriver \
     -v $(pwd)/output.ttl:/output.ttl \
     -v $(pwd)/ontology.owl:/ontology.owl \
+    -v $(pwd)/triplifier.properties:/triplifier.properties \
     registry.gitlab.com/um-cds/fair/tools/triplifier:latest
  ```
 
  **On windows systems:**
  ```
 docker run --rm ^
-    -e DB_JDBC="jdbc:sqlserver://localhost;databaseName=my_database" ^
-    -e DB_USER=my_username ^
-    -e DB_PASS=my_password ^
-    -e DB_DRIVER=com.microsoft.sqlserver.jdbc.SQLServerDriver ^
     -v %cd%/output.ttl:/output.ttl ^
     -v %cd%/ontology.owl:/ontology.owl ^
+    -v %cd%/triplifier.properties:/triplifier.properties ^
     registry.gitlab.com/um-cds/fair/tools/triplifier:latest
  ```
-
- The DB_JDBC/DB_USER/DB_PASS/DB_DRIVER variables are equivalent to the java properties file described above.
 
  ### Run as a service
 
  The example below shows how to run the container as a service, where the materialization process is called every interval time (defined by `SLEEPTIME` in seconds).
 
-#### SQL Server example
  ```
 docker run --rm \
-    -e DB_JDBC="jdbc:sqlserver://localhost;databaseName=my_database" \
-    -e DB_USER=my_username \
-    -e DB_PASS=my_password \
-    -e DB_DRIVER=com.microsoft.sqlserver.jdbc.SQLServerDriver \
     -e SLEEPTIME=10 \
-    -e OUTPUT_ENDPOINT="http://graphdb:7200/repositories/sage" \
     --link graphdb:graphdb \
+    -v $(pwd)/triplifier.properties:/triplifier.properties \
     registry.gitlab.com/um-cds/fair/tools/triplifier:latest
  ```
 
- In this example, there is already a GraphDB docker container running, hence we can connect the docker containers. Therefore, the `OUTPUT_ENDPOINT` url contains the hostname "graphdb", as inserted by the `--link` option. If the endpoint is running at a different location, you can specify the full URL of that location, an omit the `--link` option.
-
- #### CSV folder example
- **on linux/macOS**
- ```
-docker run --rm \
-    -e DB_JDBC="jdbc:relique:csv:/data?fileExtension=.csv" \
-    -e DB_USER=user \
-    -e DB_PASS=pass \
-    -e DB_DRIVER=org.relique.jdbc.csv.CsvDriver \
-    -e SLEEPTIME=60 \
-    -e OUTPUT_ENDPOINT="http://graphdb:7200/repositories/sage" \
-    -v $(pwd)/dataFolder:/data \
-    --link graphdb:graphdb \
-    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
- ```
-
- **on Windows**
- ```
-docker run --rm \
-    -e DB_JDBC="jdbc:relique:csv:/data?fileExtension=.csv" \
-    -e DB_USER=user \
-    -e DB_PASS=pass \
-    -e DB_DRIVER=org.relique.jdbc.csv.CsvDriver \
-    -e SLEEPTIME=60 \
-    -e OUTPUT_ENDPOINT="http://graphdb:7200/repositories/sage" \
-    -v %cd%/dataFolder:/data \
-    --link graphdb:graphdb \
-    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
- ```
-
-#### H2 file database example
-
-Please see the command line instruction below and replace `database_file_name` with the filename of your database (without the extension). Furthermore, copy the file database into the sub-folder `./db`. As an alternative, edit the line `-v $(pwd)/db:/db \` into `-v /folder/db/path:/db \` where "/folder/db/path" is the location of the H2 file database.
-
-The ontology and output files will be stored in the current folder.
-
-```
-touch $(pwd)/output.ttl
-touch $(pwd)/ontology.owl
-
-docker run --rm \
-    -e DB_JDBC="jdbc:h2:file:/db/database_file_name" \
-    -e DB_USER=sa \
-    -e DB_PASS=sa \
-    -e DB_DRIVER=org.h2.Driver \
-    -v $(pwd)/output.ttl:/output.ttl \
-    -v $(pwd)/ontology.owl:/ontology.owl \
-    -v $(pwd)/db:/db \
-    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
-```
-
-#### SQLite file database example
-
-For SQLite, please change the line `-v $(pwd)/db.sqlite:/my.db \` where `$(pwd)/db.sqlite` represents the local file database which is being used for analysis.
-
-```
-touch $(pwd)/output.ttl
-touch $(pwd)/ontology.owl
-
-docker run -it --rm \
-    -e DB_JDBC="jdbc:sqlite:/my.db" \
-    -e DB_DRIVER=org.sqlite.JDBC \
-    -v $(pwd)/output.ttl:/output.ttl \
-    -v $(pwd)/ontology.owl:/ontology.owl \
-    -v $(pwd)/db.sqlite:/my.db \
-    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
-```
+ In this example, there is already a GraphDB docker container running, hence we can connect the docker containers. Therefore, the `repo.url` in the properties file should containthe hostname "graphdb", as inserted by the `--link` option. If the endpoint is running at a different location, you can specify the full URL of that location in the properties file, an omit the `--link` option.
  
  ## Annotations using the result
  An example of annotations (and insertions) can be found in the following repository:
