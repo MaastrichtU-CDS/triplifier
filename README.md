@@ -2,6 +2,10 @@
 
 This repository creates the tooling project for the Triplifier.
 
+## References
+* Soest J van, Choudhury A, Gaikwad N, Sloep M, Dumontier M, Dekker A (2019) [Annotation of Existing Databases using Semantic Web Technologies: Making Data more FAIR.](http://ceur-ws.org/Vol-2849/#paper-11) CEUR-WS, Edinburgh, pp 94–101
+
+
 ## Prerequisites
 
 This tool can be executed in two modes:
