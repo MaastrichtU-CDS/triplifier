@@ -42,7 +42,7 @@ public class OntologyFactory extends RdfFactory{
 
     private void initialize() throws RepositoryException {
         this.initializeRdfStore();
-        this.context = vf.createIRI("http://ontology.local/");
+        this.context = vf.createIRI(this.baseIri);
         this.conn.setNamespace("db", this.baseIri);
         DBO.addOntologyToDatabaseConnection(this.conn);
     }

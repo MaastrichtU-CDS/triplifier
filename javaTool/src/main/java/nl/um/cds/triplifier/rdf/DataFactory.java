@@ -29,14 +29,14 @@ public class DataFactory extends RdfFactory{
         super(props);
         String hostname = super.getHostname();
 
-        this.baseIri = "http://" + hostname + "/rdf/data/";
+        this.baseIri = props.getProperty("repo.dataUri", "http://" + hostname + "/rdf/data/");
         this.ontologyFactory = ontologyFactory;
         this.initialize();
     }
 
     private void initialize(){
         this.initializeRdfStore();
-        this.context = vf.createIRI("http://data.local/");
+        this.context = vf.createIRI(this.baseIri);
         this.conn.setNamespace("data", this.baseIri);
     }
 
