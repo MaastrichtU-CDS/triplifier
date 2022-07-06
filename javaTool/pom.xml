@@ -153,6 +153,7 @@
                 <configuration>
                     <source>7</source>
                     <target>7</target>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
