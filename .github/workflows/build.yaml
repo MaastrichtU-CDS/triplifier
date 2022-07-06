@@ -35,6 +35,7 @@ jobs:
           path: artifacts
   containerize:
     runs-on: ubuntu-latest
+    needs:build-java
 
     steps:
       - uses: actions/download-artifact@v3
