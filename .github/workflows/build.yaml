@@ -33,6 +33,11 @@ jobs:
         with:
           name: triplifier_jar
           path: artifacts
+      - name: Publish package
+        if: steps.extract_branch.outputs.branch == 'master'
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   containerize:
     runs-on: ubuntu-latest
     needs: build-java

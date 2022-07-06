@@ -4,13 +4,21 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/maastrichtu-cds/triplifier</url>
+        </repository>
+    </distributionManagement>
+
     <groupId>nl.um.cds</groupId>
     <artifactId>triplifier</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Database Triplifier</name>
-    <url>https://gitlab.com/UM-CDS/fair/tools/triplifier</url>
+    <url>https://github.com/maastrichtu-cds/triplifier</url>
 
     <dependencies>
         <dependency>

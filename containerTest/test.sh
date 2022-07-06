@@ -11,7 +11,6 @@ docker run --rm \
     -v $(pwd)/ontology.owl:/ontology.owl \
     -v $(pwd)/output.ttl:/output.ttl \
     -v $(pwd)/triplifier.properties:/triplifier.properties \
-    jvsoest/test
-#registry.gitlab.com/um-cds/fair/tools/triplifier
+    ghcr.io/maastrichtu-cds/triplifier:latest
 
 rm triplifier.properties
