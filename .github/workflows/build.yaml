@@ -62,7 +62,7 @@ jobs:
         uses: docker/build-push-action@v2
         if: steps.extract_branch.outputs.branch != 'main'
         with:
-          context: ./management_webpage
+          context: .
           push: true
           tags: ghcr.io/${{ env.REPO }}:${{ steps.extract_branch.outputs.branch }}
       - name: Build container
@@ -70,6 +70,6 @@ jobs:
         uses: docker/build-push-action@v2
         if: steps.extract_branch.outputs.branch == 'main'
         with:
-          context: ./management_webpage
+          context: .
           push: true
           tags: ghcr.io/${{ env.REPO }}:${{ steps.extract_branch.outputs.branch }}, ghcr.io/${{ env.REPO }}:latest
