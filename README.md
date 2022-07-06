@@ -117,7 +117,7 @@ docker run --rm \
     -v $(pwd)/output.ttl:/output.ttl \
     -v $(pwd)/ontology.owl:/ontology.owl \
     -v $(pwd)/triplifier.properties:/triplifier.properties \
-    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
+    docker pull ghcr.io/maastrichtu-cds/triplifier:latest
  ```
 
  **On windows systems:**
@@ -126,7 +126,7 @@ docker run --rm ^
     -v %cd%/output.ttl:/output.ttl ^
     -v %cd%/ontology.owl:/ontology.owl ^
     -v %cd%/triplifier.properties:/triplifier.properties ^
-    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
+    docker pull ghcr.io/maastrichtu-cds/triplifier:latest
  ```
 
  ### Run as a service
@@ -138,7 +138,7 @@ docker run --rm \
     -e SLEEPTIME=10 \
     --link graphdb:graphdb \
     -v $(pwd)/triplifier.properties:/triplifier.properties \
-    registry.gitlab.com/um-cds/fair/tools/triplifier:latest
+    docker pull ghcr.io/maastrichtu-cds/triplifier:latest
  ```
 
  In this example, there is already a GraphDB docker container running, hence we can connect the docker containers. Therefore, the `repo.url` in the properties file should containthe hostname "graphdb", as inserted by the `--link` option. If the endpoint is running at a different location, you can specify the full URL of that location in the properties file, an omit the `--link` option.
