@@ -39,7 +39,9 @@ jobs:
           path: artifacts
       - name: Publish package
         if: steps.extract_branch.outputs.branch == 'master'
-        run: mvn --batch-mode deploy
+        run: |
+          cd javaTool
+          mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   containerize:
