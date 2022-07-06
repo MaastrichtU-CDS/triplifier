@@ -45,8 +45,8 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: .
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      # - name: Checkout repository
+      #   uses: actions/checkout@v2
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
