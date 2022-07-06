@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN python3 -m pip install rdflib requests
 
-# install ontop libraries
-COPY javaTool/target/triplifier-1.0-SNAPSHOT-jar-with-dependencies.jar triplifier.jar
+# install triplifier library
+COPY triplifier-1.0-SNAPSHOT-jar-with-dependencies.jar triplifier.jar
 
 # install run script
 COPY run.sh /run.sh
