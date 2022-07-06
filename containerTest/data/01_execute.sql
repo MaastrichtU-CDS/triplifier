@@ -1,6 +1,6 @@
-CREATE DATABASE bms;
+CREATE DATABASE my_database;
 
-\c bms;
+\c my_database;
 
 CREATE TABLE dummy (
     STUDYSUBJECTID TEXT PRIMARY KEY,

@@ -91,10 +91,12 @@ public class DataFactory extends RdfFactory{
                     "        } WHERE {\n" +
                     "\n" +
                     "            ?sources rdf:type <"+columnClassUri+">;\n" +
-                    "                     dbo:has_value ?columnValue.\n" +
+                    "                   dbo:has_cell ?sourceCell.\n" +
+                    "            ?sourceCell dbo:has_value ?columnValue.\n" +
                     "\n" +
                     "            ?targets rdf:type <"+targetClassUri+">;\n" +
-                    "                     dbo:has_value ?columnValue.\n" +
+                    "                   dbo:has_cell ?targetCell.\n" +
+                    "            ?targetCell dbo:has_value ?columnValue.\n" +
                     "        }";
             logger.debug(insertQuery);
             Update update = this.conn.prepareUpdate(insertQuery);
