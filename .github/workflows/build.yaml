@@ -21,7 +21,7 @@ jobs:
         run: |
           mkdir artifacts
           cp javaTool/target/*.jar artifacts
-      uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: Package
           path: artifacts
