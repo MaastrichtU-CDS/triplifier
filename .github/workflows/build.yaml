@@ -31,7 +31,7 @@ jobs:
           cp javaTool/target/*.jar artifacts
       - uses: actions/upload-artifact@v3
         with:
-          name: Package
+          name: triplifier_jar
           path: artifacts
   containerize:
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: my-artifact
+          name: triplifier_jar
           path: .
       - name: Checkout repository
         uses: actions/checkout@v2
