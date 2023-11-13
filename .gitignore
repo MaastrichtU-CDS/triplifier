@@ -7,3 +7,7 @@ javaTool/target
 javaTool/*.iml
 
 .idea/
+
+__pycache__
+*egg-info
+venv/
