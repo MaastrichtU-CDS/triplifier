@@ -15,6 +15,7 @@ setup(
         "rdflib",
         "requests",
         "click",
-        "pandas"
+        "pandas",
+        "git+https://github.com/jvsoest/datasources.git@dev"
     ],
 )

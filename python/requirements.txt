@@ -1,2 +1,3 @@
 sqlalchemy
 pandas
+git+https://github.com/jvsoest/datasources.git@dev
