@@ -7,7 +7,7 @@ This repository creates the tooling project for the Triplifier.
 The Python code is packaged for distribution. You can install it from GitHub Packages:
 
 ```bash
-pip install --extra-index-url https://pypi.pkg.github.com/<OWNER> triplifier
+pip install triplifier
 ```
 
 After installation the `triplifier` command is available to run the tool.
