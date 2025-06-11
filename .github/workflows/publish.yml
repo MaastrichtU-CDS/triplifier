@@ -26,11 +26,13 @@ jobs:
           python -m build
 
       - name: Publish to GitHub Packages
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.GITHUB_TOKEN }}
-          repository-url: https://pypi.pkg.github.com/${{ github.repository_owner }}
+        run: |
+          python -m pip install --upgrade twine
+          python -m twine upload --repository-url https://pypi.pkg.github.com/${{ github.repository_owner }} dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Bump version in pyproject.toml
         id: bump_version
         run: |
