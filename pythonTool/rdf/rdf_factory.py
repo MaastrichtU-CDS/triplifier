@@ -15,14 +15,14 @@ class RdfFactory:
 
     def add_statement(self, subject: URIRef, predicate: URIRef, obj) -> None:
         if self.context:
-            self.graph.add((subject, predicate, obj, self.context))
+            self.graph.get_context(self.context).add((subject, predicate, obj))
         else:
             self.graph.add((subject, predicate, obj))
 
     def add_statements(self, statements: Iterable[tuple]) -> None:
         for s in statements:
             if self.context:
-                self.graph.add((s[0], s[1], s[2], self.context))
+                self.graph.get_context(self.context).add(s)
             else:
                 self.graph.add(s)
 
@@ -34,5 +34,5 @@ class RdfFactory:
 
     def get_all_statements_in_context(self):
         if self.context:
-            return list(self.graph.triples((None, None, None, self.context)))
+            return list(self.graph.get_context(self.context).triples((None, None, None)))
         return list(self.graph.triples((None, None, None)))

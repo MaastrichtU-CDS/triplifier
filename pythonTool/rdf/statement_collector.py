@@ -8,10 +8,7 @@ class StatementCollector:
         self.statements: List[tuple] = []
 
     def add_statement(self, subject, predicate, obj) -> None:
-        if self.context is not None:
-            self.statements.append((subject, predicate, obj, self.context))
-        else:
-            self.statements.append((subject, predicate, obj))
+        self.statements.append((subject, predicate, obj))
 
     def get_statements(self):
         return list(self.statements)

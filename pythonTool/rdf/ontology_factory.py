@@ -8,7 +8,6 @@ from .ontology.dbo import (
     DATABASECOLUMN,
     PRIMARYKEY,
     FOREIGNKEY,
-    HAS_COLUMN,
     COLUMNREFERENCE,
     TABLE,
     CATALOG,
@@ -81,9 +80,8 @@ class OntologyFactory(RdfFactory):
         self.graph.add((column_class, RDF.type, OWL.Class))
         self.graph.add((column_class, RDFS.subClassOf, DATABASECOLUMN))
         self.graph.add((column_class, RDFS.label, Literal(f"{table_name}.{column}")))
-        self.graph.add((column_class, TABLE, Literal(table_name)))
+        self.graph.add((column_class, TABLE, self.get_class_for_table(table_name)))
         self.graph.add((column_class, COLUMN, Literal(column)))
-        self.graph.add((column_class, HAS_COLUMN, self.get_class_for_table(table_name)))
         return column_class
 
     def add_primary_keys(self, table_name: str, primary_keys: List[str]) -> None:
@@ -121,5 +119,4 @@ class OntologyFactory(RdfFactory):
             })
 
     def export_data(self, file_path: str) -> None:
-        with open(file_path, "wb") as f:
-            f.write(self.graph.serialize(format="xml"))
+        self.graph.serialize(destination=file_path, format="xml")

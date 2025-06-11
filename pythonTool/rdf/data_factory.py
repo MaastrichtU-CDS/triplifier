@@ -101,5 +101,4 @@ class DataFactory(RdfFactory):
                         self.add_statement(s, fk["predicate"], t)
 
     def export_data(self, file_path: str) -> None:
-        with open(file_path, "wb") as f:
-            f.write(self.graph.serialize(format="nt"))
+        self.graph.serialize(destination=file_path, format="nt")
