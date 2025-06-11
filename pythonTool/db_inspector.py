@@ -1,60 +1,45 @@
-import sqlite3
 from typing import List, Dict
+from sqlalchemy import create_engine, inspect
 from .foreign_key_specification import ForeignKeySpecification
 
 
 class DatabaseInspector:
-    """Simplified database inspector using sqlite3."""
+    """Database inspector using SQLAlchemy."""
 
     def __init__(self, props: Dict[str, str]):
         self.props = props
-        self.connection = None
-        self.connect_database(
-            props.get("db.url"),
-            props.get("db.user"),
-            props.get("db.password"),
-        )
-
-    def connect_database(self, url: str, user: str, password: str) -> None:
-        # Only supports SQLite connections for simplicity
-        # db.url expects format 'sqlite:///path/to/db'
-        if url and url.startswith("sqlite:"):
-            path = url.split("sqlite:")[-1].lstrip("/")
-            self.connection = sqlite3.connect(path)
-        else:
-            raise ValueError("Only sqlite URLs are supported in this python port")
+        url = props.get("db.url")
+        if not url:
+            raise ValueError("db.url must be provided")
+        self.engine = create_engine(url)
+        self.inspector = inspect(self.engine)
 
     def get_table_names(self) -> List[Dict[str, str]]:
-        cursor = self.connection.cursor()
-        cursor.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
-        )
         return [
-            {"name": row[0], "catalog": None, "schema": None}
-            for row in cursor.fetchall()
+            {"name": name, "catalog": None, "schema": None}
+            for name in self.inspector.get_table_names()
         ]
 
     def get_column_names(self, table_name: str) -> List[str]:
-        cursor = self.connection.cursor()
-        cursor.execute(f"PRAGMA table_info('{table_name}')")
-        return [row[1] for row in cursor.fetchall()]
+        return [c["name"] for c in self.inspector.get_columns(table_name)]
 
     def get_primary_key_columns(self, catalog: str, schema: str, table_name: str) -> List[str]:
-        cursor = self.connection.cursor()
-        cursor.execute(f"PRAGMA table_info('{table_name}')")
-        return [row[1] for row in cursor.fetchall() if row[5] == 1]
+        pk = self.inspector.get_pk_constraint(table_name)
+        return pk.get("constrained_columns", [])
 
     def get_foreign_key_columns(self, catalog: str, schema: str, table_name: str) -> List[ForeignKeySpecification]:
-        cursor = self.connection.cursor()
-        cursor.execute(f"PRAGMA foreign_key_list('{table_name}')")
-        fk_list = []
-        for row in cursor.fetchall():
-            fk_list.append(
-                ForeignKeySpecification(
-                    primary_key_table=row[2],
-                    primary_key_column=row[4],
-                    foreign_key_table=table_name,
-                    foreign_key_column=row[3],
+        fks = []
+        for fk in self.inspector.get_foreign_keys(table_name):
+            for local, remote in zip(
+                fk.get("constrained_columns", []),
+                fk.get("referred_columns", []),
+            ):
+                fks.append(
+                    ForeignKeySpecification(
+                        primary_key_table=fk.get("referred_table"),
+                        primary_key_column=remote,
+                        foreign_key_table=table_name,
+                        foreign_key_column=local,
+                    )
                 )
-            )
-        return fk_list
+        return fks

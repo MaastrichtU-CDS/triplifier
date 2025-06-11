@@ -5,7 +5,7 @@ from .rdf_factory import RdfFactory
 from .statement_collector import StatementCollector
 from .ontology.dbo import DBO, HAS_COLUMN, HAS_CELL, HAS_VALUE
 from .ontology_factory import OntologyFactory
-import sqlite3
+from sqlalchemy import create_engine, text
 
 
 class DataFactory(RdfFactory):
@@ -15,6 +15,10 @@ class DataFactory(RdfFactory):
         self.base_iri = props.get("repo.dataUri", f"http://{hostname}/rdf/data/")
         self.ontology_factory = ontology_factory
         self.value_index: Dict[str, Dict[str, List[URIRef]]] = {}
+        url = props.get("db.url")
+        if not url:
+            raise ValueError("db.url must be provided")
+        self.engine = create_engine(url)
         self.initialize()
 
     def initialize(self) -> None:
@@ -23,32 +27,23 @@ class DataFactory(RdfFactory):
         self.graph.bind("data", self.base_iri)
 
     def convert_data(self) -> None:
-        url = self.props.get("db.url")
-        if not url or not url.startswith("sqlite:"):
-            raise ValueError("Only sqlite connections are supported in this python port")
-        path = url.split("sqlite:")[-1].lstrip("/")
-        conn = sqlite3.connect(path)
+        with self.engine.connect() as conn:
+            for table_name, table_info in self.ontology_factory.tables.items():
+                table_class_uri = table_info["class"]
+                name = str(table_class_uri).split("/")[-1]
+                self.process_table(conn, table_class_uri, name)
+            self.generate_foreign_key_relations()
 
-        for table_info in self.ontology_factory.tables.values():
-            table_class_uri = table_info["class"]
-            table_name = table_info["class"].split("/")[-1]
-            self.process_table(conn, table_class_uri, table_name)
-
-        self.generate_foreign_key_relations()
-
-    def process_table(self, conn: sqlite3.Connection, table_class_uri: URIRef, table_name: str) -> None:
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM {table_name}")
-        columns = [d[0] for d in cursor.description]
-        row_id = 0
-        for row in cursor.fetchall():
+    def process_table(self, conn, table_class_uri: URIRef, table_name: str) -> None:
+        result = conn.execute(text(f'SELECT * FROM "{table_name}"'))
+        columns = list(result.keys())
+        for row_id, row in enumerate(result):
             row_iri = self.get_table_row_iri(table_name, table_class_uri, row_id, columns, row)
             collector = StatementCollector(self.context)
             collector.add_statement(row_iri, RDF.type, table_class_uri)
             self.process_columns(row, columns, table_class_uri, row_iri, collector)
             self.add_statements(collector.get_statements())
             collector.clear()
-            row_id += 1
 
     def get_table_row_iri(
         self,
@@ -63,7 +58,7 @@ class DataFactory(RdfFactory):
 
         pk_columns = self.ontology_factory.tables[table_name]["primary_keys"]
         if pk_columns:
-            pkey_value = "_".join(str(row[columns.index(pk)]) for pk in pk_columns)
+            pkey_value = "_".join(str(row[pk]) for pk in pk_columns)
             iri = URIRef(base_iri_table + pkey_value)
         return iri
 
@@ -75,9 +70,11 @@ class DataFactory(RdfFactory):
         row_iri: URIRef,
         collector: StatementCollector,
     ) -> None:
-        for col_name, value in zip(columns, row):
+        table_name = str(table_class_uri).split("/")[-1]
+        for col_name in columns:
+            value = row[col_name]
             column_class_uri = self.ontology_factory.get_class_for_column(
-                table_class_uri.split("/")[-1], col_name
+                table_name, col_name
             )
             column_row_iri = URIRef(f"{row_iri}/{col_name}")
             collector.add_statement(column_row_iri, RDF.type, column_class_uri)

@@ -18,24 +18,25 @@ For the docker container, it needs [Docker Community Edition](https://www.docker
 
 ## Run as Java command-line tool
 
-The basic configuration can run with the following command:
+The basic configuration for the Python port can be run with the following command:
 
 ```
-java -jar triplifier.jar -p triplifier.properties
+python -m pythonTool.main_app -c triplifier.yaml
 ```
 
-The properties file contains the database connection information. In the Python version only SQLite is supported and the connection string should follow the form `sqlite:///path/to/db`.
+The YAML configuration file contains the database connection information using SQLAlchemy style URLs.
 
 **SQLite database file**
-```
-db.url = sqlite:///my.db
-db.user = user
-db.password = pass
+```yaml
+db:
+  url: sqlite:///my.db
+  user: user
+  password: pass
 ```
 
 ### Upload triples to RDF endpoint
 
-To upload data directly into an RDF endpoint (and hence save the memory footprint), please add the following variables in the properties file (default: triplifier.properties):
+To upload data directly into an RDF endpoint (and hence save the memory footprint), please add the following variables in the YAML file (default: triplifier.yaml):
 
 * *repo.type*: Indicating the type of RDF endpoint. The following values are allowed for this variable:
     * "memory": this is the default, in-memory (and file-based) RDF/OWL output
@@ -48,12 +49,13 @@ To upload data directly into an RDF endpoint (and hence save the memory footprin
 
 An example of the full specification is given below:
 
-```
-repo.type = rdf4j
-repo.url = http://localhost:7200
-repo.id = data
-repo.user = userNameTest
-repo.pass = test
+```yaml
+repo:
+  type: rdf4j
+  url: http://localhost:7200
+  id: data
+  user: userNameTest
+  pass: test
 ```
 
 ### Optional arguments
@@ -62,7 +64,7 @@ By default, the tool will generate an ontology file (ontology.owl) and a turtle 
 
 * -o <output_path_for_materialized_triples_file>
 * -t <output_path_for_ontology_file>
-* -c
+* -c <configuration_file>
 * -b
 * --ontologyAndOrData [ontology|data]
 
@@ -75,7 +77,7 @@ To run the triplifier as Docker container, you can run the following command:
 docker run --rm \
     -v $(pwd)/output.ttl:/output.ttl \
     -v $(pwd)/ontology.owl:/ontology.owl \
-    -v $(pwd)/triplifier.properties:/triplifier.properties \
+    -v $(pwd)/triplifier.yaml:/triplifier.yaml \
     ghcr.io/maastrichtu-cds/triplifier:latest
  ```
 
@@ -84,7 +86,7 @@ docker run --rm \
 docker run --rm ^
     -v %cd%/output.ttl:/output.ttl ^
     -v %cd%/ontology.owl:/ontology.owl ^
-    -v %cd%/triplifier.properties:/triplifier.properties ^
+    -v %cd%/triplifier.yaml:/triplifier.yaml ^
     ghcr.io/maastrichtu-cds/triplifier:latest
  ```
 
@@ -96,11 +98,11 @@ docker run --rm ^
 docker run --rm \
     -e SLEEPTIME=10 \
     --link graphdb:graphdb \
-    -v $(pwd)/triplifier.properties:/triplifier.properties \
+    -v $(pwd)/triplifier.yaml:/triplifier.yaml \
     ghcr.io/maastrichtu-cds/triplifier:latest
  ```
 
- In this example, there is already a GraphDB docker container running, hence we can connect the docker containers. Therefore, the `repo.url` in the properties file should containthe hostname "graphdb", as inserted by the `--link` option. If the endpoint is running at a different location, you can specify the full URL of that location in the properties file, an omit the `--link` option.
+In this example, there is already a GraphDB docker container running, hence we can connect the docker containers. Therefore, the `repo.url` in the configuration file should contain the hostname "graphdb", as inserted by the `--link` option. If the endpoint is running at a different location, you can specify the full URL of that location in the configuration file, and omit the `--link` option.
  
  ## Annotations using the result
  An example of annotations (and insertions) can be found in the following repository:

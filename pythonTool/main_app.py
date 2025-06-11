@@ -1,7 +1,6 @@
 import argparse
-import configparser
+import yaml
 import logging
-from pathlib import Path
 
 from .db_inspector import DatabaseInspector
 from .rdf.ontology_factory import OntologyFactory
@@ -14,9 +13,8 @@ logger = logging.getLogger("triplifier")
 
 
 def run_triplifier(args: argparse.Namespace) -> None:
-    config = configparser.ConfigParser()
-    config.read(args.properties)
-    props = {k: v for section in config.sections() for k, v in config.items(section)}
+    with open(args.config) as f:
+        props = yaml.safe_load(f) or {}
 
     of = OntologyFactory(props, base_iri=args.baseuri)
     df = DataFactory(of, props)
@@ -39,7 +37,7 @@ def run_triplifier(args: argparse.Namespace) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description="Python Triplifier")
-    parser.add_argument("-p", "--properties", default="triplifier.properties")
+    parser.add_argument("-c", "--config", default="triplifier.yaml")
     parser.add_argument("-o", "--output", default="output.ttl")
     parser.add_argument("-t", "--ontology", default="ontology.owl")
     parser.add_argument("-b", "--baseuri", default=None)
