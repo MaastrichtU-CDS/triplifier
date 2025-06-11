@@ -1,0 +1,75 @@
+name: Build and Publish
+
+on:
+  push:
+    branches:
+      - main
+      - release/*
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Build package
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+
+      - name: Publish to GitHub Packages
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.GITHUB_TOKEN }}
+          repository-url: https://pypi.pkg.github.com/${{ github.repository_owner }}
+      - name: Bump version in pyproject.toml
+        id: bump_version
+        run: |
+          pip install toml
+          python -c "
+            import os
+            import toml
+            from pathlib import Path
+
+            pyproject = Path('pyproject.toml')
+            data = toml.load(pyproject)
+            version = data['project']['version']
+            major, minor, patch = map(int, version.split('.'))
+
+            ref = os.environ.get('GITHUB_REF', '')
+            if ref.startswith('refs/heads/version/'):
+                patch += 1
+                new_version = f'{major}.{minor}.{patch}'
+            else:
+                minor += 1
+                new_version = f'{major}.{minor}.0'
+
+            data['project']['version'] = new_version
+            with pyproject.open('w') as f:
+                toml.dump(data, f)
+            print(f'::set-output name=new_version::{new_version}')
+            "
+      
+      - name: Commit and push version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml
+          git commit -m "Bump version to ${{ steps.bump_version.outputs.new_version }}"
+          git push
+
+      - name: Create branch for new version if on main
+        if: github.ref == 'refs/heads/main'
+        run: |
+          version=${{ steps.bump_version.outputs.new_version }}
+          git checkout -b version/${version}
+          git push origin version/${version}
