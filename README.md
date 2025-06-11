@@ -65,8 +65,12 @@ By default, the tool will generate an ontology file (ontology.owl) and a turtle 
 * -o <output_path_for_materialized_triples_file>
 * -t <output_path_for_ontology_file>
 * -c <configuration_file>
-* -b
-* --ontologyAndOrData [ontology|data]
+* -b <base_uri_for_ontology>
+* --ontologyAndOrData <ontology|data>
+
+The `--ontologyAndOrData` option allows running only the ontology extraction
+(`ontology`) or only the data materialization (`data`) given an ontology file.
+If omitted, both steps are executed.
 
 ## Run as Docker container
 

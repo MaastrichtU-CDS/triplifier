@@ -32,6 +32,52 @@ class OntologyFactory(RdfFactory):
         add_ontology_to_graph(self.graph)
         self.graph.bind("db", self.base_iri)
 
+    def load_ontology(self, file_path: str) -> None:
+        """Load an existing ontology file and rebuild internal mappings."""
+        self.initialize_rdf_store()
+        self.graph.parse(file_path)
+        self.context = URIRef(self.base_iri)
+        self.tables = {}
+        self.foreign_keys = []
+
+        for table_class in self.graph.subjects(RDFS.subClassOf, DATABASETABLE):
+            table_name_literal = self.graph.value(table_class, TABLE)
+            if table_name_literal is None:
+                continue
+            table_name = str(table_name_literal)
+            schema_name = self.graph.value(table_class, SCHEMA)
+            catalog_name = self.graph.value(table_class, CATALOG)
+            columns = []
+            primary_keys = []
+            for col_class in self.graph.subjects(TABLE, table_class):
+                col_name_literal = self.graph.value(col_class, COLUMN)
+                if col_name_literal is None:
+                    continue
+                col_name = str(col_name_literal)
+                columns.append(col_name)
+                if (col_class, RDFS.subClassOf, PRIMARYKEY) in self.graph:
+                    primary_keys.append(col_name)
+
+            self.tables[table_name] = {
+                "class": table_class,
+                "columns": columns,
+                "primary_keys": primary_keys,
+                "schema": str(schema_name) if schema_name else None,
+                "catalog": str(catalog_name) if catalog_name else None,
+            }
+
+        for pred in self.graph.subjects(RDFS.subPropertyOf, COLUMNREFERENCE):
+            source = self.graph.value(pred, RDFS.domain)
+            target = self.graph.value(pred, RDFS.range)
+            if source and target:
+                self.foreign_keys.append(
+                    {
+                        "predicate": pred,
+                        "source_class": source,
+                        "target_class": target,
+                    }
+                )
+
     def get_class_for_table(self, table_name: str) -> URIRef:
         return URIRef(self.base_iri + table_name.replace(" ", "_"))
 
