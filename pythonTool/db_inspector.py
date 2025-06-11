@@ -10,16 +10,16 @@ class DatabaseInspector:
         self.props = props
         self.connection = None
         self.connect_database(
-            props.get("jdbc.url"),
-            props.get("jdbc.user"),
-            props.get("jdbc.password"),
+            props.get("db.url"),
+            props.get("db.user"),
+            props.get("db.password"),
         )
 
     def connect_database(self, url: str, user: str, password: str) -> None:
         # Only supports SQLite connections for simplicity
-        # jdbc.url expects format 'jdbc:sqlite:/path/to/db'
-        if url and url.startswith("jdbc:sqlite:"):
-            path = url.replace("jdbc:sqlite:", "")
+        # db.url expects format 'sqlite:///path/to/db'
+        if url and url.startswith("sqlite:"):
+            path = url.split("sqlite:")[-1].lstrip("/")
             self.connection = sqlite3.connect(path)
         else:
             raise ValueError("Only sqlite URLs are supported in this python port")

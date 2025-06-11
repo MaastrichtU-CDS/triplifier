@@ -23,10 +23,10 @@ class DataFactory(RdfFactory):
         self.graph.bind("data", self.base_iri)
 
     def convert_data(self) -> None:
-        url = self.props.get("jdbc.url")
-        if not url or not url.startswith("jdbc:sqlite:"):
+        url = self.props.get("db.url")
+        if not url or not url.startswith("sqlite:"):
             raise ValueError("Only sqlite connections are supported in this python port")
-        path = url.replace("jdbc:sqlite:", "")
+        path = url.split("sqlite:")[-1].lstrip("/")
         conn = sqlite3.connect(path)
 
         for table_info in self.ontology_factory.tables.values():

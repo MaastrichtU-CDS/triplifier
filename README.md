@@ -24,54 +24,13 @@ The basic configuration can run with the following command:
 java -jar triplifier.jar -p triplifier.properties
 ```
 
-The properties file mentioned here contains the JDBC connection information, several examples are displayed below, for different database systems.
-
-**PostgreSQL**
-```
-jdbc.url = jdbc:postgresql://localhost/my_database
-jdbc.user = postgres
-jdbc.password = postgres
-jdbc.driver = org.postgresql.Driver
-```
-
-**MySQL**
-```
-jdbc.url = jdbc:mysql://localhost/my_database
-jdbc.user = user
-jdbc.password = pass
-jdbc.driver = com.mysql.cj.jdbc.Driver
-```
-
-**Microsoft SQL Server**
-```
-jdbc.url = jdbc:sqlserver://localhost;databaseName=my_database
-jdbc.user = my_username
-jdbc.password = my_password
-jdbc.driver = com.microsoft.sqlserver.jdbc.SQLServerDriver
-```
-
-**H2 database file**
-```
-jdbc.url = jdbc:h2:file:/db/database_file_name
-jdbc.user = sa
-jdbc.password = sa
-jdbc.driver = org.h2.Driver
-```
+The properties file contains the database connection information. In the Python version only SQLite is supported and the connection string should follow the form `sqlite:///path/to/db`.
 
 **SQLite database file**
 ```
-jdbc.url = jdbc:sqlite:/my.db
-jdbc.user = user
-jdbc.password = pass
-jdbc.driver = org.sqlite.JDBC
-```
-
-**Folder with CSV files**
-```
-jdbc.url = jdbc:relique:csv:C:\\Users\\johan\\test?fileExtension=.csv
-jdbc.user = user
-jdbc.password = pass
-jdbc.driver = org.relique.jdbc.csv.CsvDriver
+db.url = sqlite:///my.db
+db.user = user
+db.password = pass
 ```
 
 ### Upload triples to RDF endpoint
