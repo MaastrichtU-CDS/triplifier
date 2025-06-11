@@ -17,17 +17,7 @@ After installation the `triplifier` command is available to run the tool.
 * Soest J van, Choudhury A, Gaikwad N, Sloep M, Dumontier M, Dekker A (2019) [Annotation of Existing Databases using Semantic Web Technologies: Making Data more FAIR.](http://ceur-ws.org/Vol-2849/#paper-11) CEUR-WS, Edinburgh, pp 94–101
 
 
-## Prerequisites
-
-This tool can be executed in two modes:
-
-* Stand-alone java runnable jar
-* Docker container (and service) mode
-
-For the runnable jar, it needs a computer with [Java 8 runtime](oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) installed.
-For the docker container, it needs [Docker Community Edition](https://www.docker.com/community-edition) (native on Ubuntu, "for Windows" or "for Mac").
-
-## Run as Java command-line tool
+## Run as command-line tool
 
 The basic configuration for the Python port can be run with the following command:
 
@@ -45,28 +35,10 @@ db:
   password: pass
 ```
 
-### Upload triples to RDF endpoint
-
-To upload data directly into an RDF endpoint (and hence save the memory footprint), please add the following variables in the YAML file (default: triplifier.yaml):
-
-* *repo.type*: Indicating the type of RDF endpoint. The following values are allowed for this variable:
-    * "memory": this is the default, in-memory (and file-based) RDF/OWL output
-    * "sparql": upload the triples directly in a SPARQL endpoint using the SPARQL protocol
-    * "rdf4j": upload the triples directly in an RDF4j repository (e.g. a RDF4j or GraphDB database)
-* *repo.url*: the URL of the RDF endpoint (not applicable or needed for `repo.type = memory`). In case of a SPARQL endpoint, include the URL of the actual SPARQL endpoint. In case of RDF4j, indicate the URL of the repository server
-* *repo.id*: for `repo.type = rdf4j` indicate the repository ID
-* *repo.user*: optional, specify the username for password-protected rdf4j repositories
-* *repo.pass*: optional, specify the password for password-protected rdf4j repositories
-
-An example of the full specification is given below:
-
+**Postgres database file**
 ```yaml
-repo:
-  type: rdf4j
-  url: http://localhost:7200
-  id: data
-  user: userNameTest
-  pass: test
+db:
+  url: "postgresql://postgres:postgres@localhost:5432/my_database"
 ```
 
 ### Optional arguments
@@ -82,42 +54,6 @@ By default, the tool will generate an ontology file (ontology.owl) and a turtle 
 The `--ontologyAndOrData` option allows running only the ontology extraction
 (`ontology`) or only the data materialization (`data`) given an ontology file.
 If omitted, both steps are executed.
-
-## Run as Docker container
-
-To run the triplifier as Docker container, you can run the following command:
-
-**On Linux/Unix/macOS systems:**
- ```
-docker run --rm \
-    -v $(pwd)/output.ttl:/output.ttl \
-    -v $(pwd)/ontology.owl:/ontology.owl \
-    -v $(pwd)/triplifier.yaml:/triplifier.yaml \
-    ghcr.io/maastrichtu-cds/triplifier:latest
- ```
-
- **On windows systems:**
- ```
-docker run --rm ^
-    -v %cd%/output.ttl:/output.ttl ^
-    -v %cd%/ontology.owl:/ontology.owl ^
-    -v %cd%/triplifier.yaml:/triplifier.yaml ^
-    ghcr.io/maastrichtu-cds/triplifier:latest
- ```
-
- ### Run as a service
-
- The example below shows how to run the container as a service, where the materialization process is called every interval time (defined by `SLEEPTIME` in seconds).
-
- ```
-docker run --rm \
-    -e SLEEPTIME=10 \
-    --link graphdb:graphdb \
-    -v $(pwd)/triplifier.yaml:/triplifier.yaml \
-    ghcr.io/maastrichtu-cds/triplifier:latest
- ```
-
-In this example, there is already a GraphDB docker container running, hence we can connect the docker containers. Therefore, the `repo.url` in the configuration file should contain the hostname "graphdb", as inserted by the `--link` option. If the endpoint is running at a different location, you can specify the full URL of that location in the configuration file, and omit the `--link` option.
  
  ## Annotations using the result
  An example of annotations (and insertions) can be found in the following repository:

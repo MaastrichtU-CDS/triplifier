@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "triplifier"
-version = "0.1.0"
+version = "2.0.0"
 description = "Python port of the Triplifier tool."
 readme = "README.md"
 requires-python = ">=3.8"
 license = {file = "LICENSE"}
-authors = [ {name = "Triplifier Maintainers"} ]
+authors = [ {name = "Johan van Soest"} ]
 dependencies = [
     "rdflib>=6.0.0",
     "PyYAML>=5.3",
