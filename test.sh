@@ -16,7 +16,7 @@ echo "db:" > test.yaml
 echo "  url: \"postgresql://postgres:postgres@localhost:5432/my_database\"" >> test.yaml
 
 # Run the Python tool with the test configuration file
-time python -m pythonTool.main_app -c test.yaml
+time triplifier -c test.yaml
 
 # Check if the tool ran successfully
 if [ $? -eq 0 ]; then

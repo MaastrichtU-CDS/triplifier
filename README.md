@@ -2,6 +2,17 @@
 
 This repository creates the tooling project for the Triplifier.
 
+## Python package
+
+The Python code is packaged for distribution. You can install it from GitHub Packages:
+
+```bash
+pip install --extra-index-url https://pypi.pkg.github.com/<OWNER> triplifier
+```
+
+After installation the `triplifier` command is available to run the tool.
+
+
 ## References
 * Soest J van, Choudhury A, Gaikwad N, Sloep M, Dumontier M, Dekker A (2019) [Annotation of Existing Databases using Semantic Web Technologies: Making Data more FAIR.](http://ceur-ws.org/Vol-2849/#paper-11) CEUR-WS, Edinburgh, pp 94–101
 
@@ -21,7 +32,7 @@ For the docker container, it needs [Docker Community Edition](https://www.docker
 The basic configuration for the Python port can be run with the following command:
 
 ```
-python -m pythonTool.main_app -c triplifier.yaml
+triplifier -c triplifier.yaml
 ```
 
 The YAML configuration file contains the database connection information using SQLAlchemy style URLs.
