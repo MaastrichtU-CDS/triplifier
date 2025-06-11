@@ -58,7 +58,12 @@ class DataFactory(RdfFactory):
 
         pk_columns = self.ontology_factory.tables[table_name]["primary_keys"]
         if pk_columns:
-            pkey_value = "_".join(str(row[pk]) for pk in pk_columns)
+            # Ensure compatibility with both dict-like and tuple-like row objects
+            try:
+                pkey_value = "_".join(str(row[pk]) for pk in pk_columns)
+            except (KeyError, TypeError, AttributeError):
+                # Fallback for tuple-like rows
+                pkey_value = "_".join(str(getattr(row, pk)) for pk in pk_columns)
             iri = URIRef(base_iri_table + pkey_value)
         return iri
 
@@ -72,7 +77,10 @@ class DataFactory(RdfFactory):
     ) -> None:
         table_name = str(table_class_uri).split("/")[-1]
         for col_name in columns:
-            value = row[col_name]
+            try:
+                value = row[col_name]
+            except (KeyError, TypeError, AttributeError):
+                value = getattr(row, col_name)
             column_class_uri = self.ontology_factory.get_class_for_column(
                 table_name, col_name
             )
