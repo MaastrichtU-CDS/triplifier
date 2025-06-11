@@ -15,7 +15,7 @@ class DataFactory(RdfFactory):
         self.base_iri = props.get("repo.dataUri", f"http://{hostname}/rdf/data/")
         self.ontology_factory = ontology_factory
         self.value_index: Dict[str, Dict[str, List[URIRef]]] = {}
-        url = props.get("db.url")
+        url = props["db"]["url"]
         if not url:
             raise ValueError("db.url must be provided")
         self.engine = create_engine(url)

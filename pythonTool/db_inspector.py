@@ -8,7 +8,7 @@ class DatabaseInspector:
 
     def __init__(self, props: Dict[str, str]):
         self.props = props
-        url = props.get("db.url")
+        url = props['db']['url']
         if not url:
             raise ValueError("db.url must be provided")
         self.engine = create_engine(url)

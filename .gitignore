@@ -7,3 +7,5 @@ javaTool/target
 javaTool/*.iml
 
 .idea/
+venv/
+__pycache__/

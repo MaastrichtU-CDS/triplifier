@@ -15,7 +15,7 @@ logger = logging.getLogger("triplifier")
 def run_triplifier(args: argparse.Namespace) -> None:
     with open(args.config) as f:
         props = yaml.safe_load(f) or {}
-
+    
     of = OntologyFactory(props, base_iri=args.baseuri)
     db_inspect = DatabaseInspector(props)
 
@@ -47,11 +47,15 @@ def run_triplifier(args: argparse.Namespace) -> None:
 
 
 def main():
+    #get hostname
+    import socket
+    hostname = socket.gethostname()
+
     parser = argparse.ArgumentParser(description="Python Triplifier")
     parser.add_argument("-c", "--config", default="triplifier.yaml")
     parser.add_argument("-o", "--output", default="output.ttl")
     parser.add_argument("-t", "--ontology", default="ontology.owl")
-    parser.add_argument("-b", "--baseuri", default=None)
+    parser.add_argument("-b", "--baseuri", default=f"http://{hostname}/")
     parser.add_argument(
         "--ontologyAndOrData",
         choices=["ontology", "data"],
