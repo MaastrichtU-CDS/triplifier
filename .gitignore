@@ -9,3 +9,5 @@ javaTool/*.iml
 .idea/
 venv/
 __pycache__/
+build/
+*.egg-info
