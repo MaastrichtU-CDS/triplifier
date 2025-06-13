@@ -37,7 +37,7 @@ jobs:
         id: bump_version
         run: |
           pip install toml
-          python .github/scripts/bump_version.py      
+          python .github/scripts/bump_version_number.py      
       - name: Commit and push version bump
         run: |
           git config user.name "github-actions[bot]"
