@@ -35,6 +35,13 @@ abstract class RdfFactory {
     }
 
     String getHostname() {
+        // Priority 1: Check for custom hostname specified via command line
+        String customHostname = props.getProperty("custom.hostname");
+        if (customHostname != null && !customHostname.trim().isEmpty()) {
+            return customHostname;
+        }
+
+        // Priority 2: Try to get actual hostname
         String hostname = "localhost";
         try {
             hostname = InetAddress.getLocalHost().getCanonicalHostName();
@@ -42,6 +49,7 @@ abstract class RdfFactory {
             e.printStackTrace();
         }
 
+        // Priority 3: Fallback to localhost (already set above)
         return hostname;
     }
 

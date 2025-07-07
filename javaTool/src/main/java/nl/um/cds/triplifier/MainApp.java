@@ -29,6 +29,7 @@ public class MainApp {
         Properties props = new Properties();
 
         String baseUri = null;
+        String customHostname = null;
 
         Logger logger = Logger.getLogger(this.getClass());
         URL log4jResource = MainApp.class.getResource("log4j.properties");
@@ -42,6 +43,8 @@ public class MainApp {
                 ontologyFilePath = args[i + 1];
             } else if ("-b".equals(args[i])) {
                 baseUri = args[i + 1];
+            } else if ("--hostname".equals(args[i])) {
+                customHostname = args[i + 1];
             } else if ("-c".equals(args[i])) {
                 clearDataGraph = true;
             } else if ("--ontologyOrData".equals(args[i])) {
@@ -61,6 +64,11 @@ public class MainApp {
             logger.error("Could not find properties file (" + propertiesFilePath + ", or specified using the -p argument).");
             System.exit(1);
             e.printStackTrace();
+        }
+
+        // Set custom hostname in properties if provided via command line
+        if (customHostname != null) {
+            props.setProperty("custom.hostname", customHostname);
         }
 
         OntologyFactory of = new OntologyFactory(props);
