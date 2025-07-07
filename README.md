@@ -105,7 +105,21 @@ By default, the tool will generate an ontology file (ontology.owl) and a turtle 
 * -t <output_path_for_ontology_file>
 * -c
 * -b
+* --hostname <custom_hostname>: Specify a custom hostname for URI generation (overrides automatic hostname detection)
 * --ontologyAndOrData [ontology|data]
+
+#### Hostname for URI Generation
+
+The tool generates URIs using a hostname in the following priority order:
+1. **Custom hostname** specified via `--hostname` flag (highest priority)
+2. **Actual system hostname** (detected automatically)
+3. **"localhost"** (fallback)
+
+Example usage:
+```
+java -jar triplifier.jar -p config.properties --hostname my-domain.com
+```
+This will generate URIs like `http://my-domain.com/rdf/data/` and `http://my-domain.com/rdf/ontology/`.
 
 ## Run as Docker container
 
