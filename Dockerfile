@@ -1,13 +1,13 @@
-FROM eclipse-temurin:11
+FROM eclipse-temurin:17
 
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     curl \
     unzip \
-    dos2unix
-
-RUN python3 -m pip install rdflib requests
+    dos2unix \
+    python3-rdflib \
+    python3-requests
 
 # install triplifier library
 COPY ./triplifier-1.4.0-SNAPSHOT-jar-with-dependencies.jar triplifier.jar
