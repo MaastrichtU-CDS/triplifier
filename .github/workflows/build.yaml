@@ -33,7 +33,7 @@ jobs:
         run: |
           mkdir artifacts
           cp javaTool/target/*.jar artifacts
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: triplifier_jar
           path: artifacts
