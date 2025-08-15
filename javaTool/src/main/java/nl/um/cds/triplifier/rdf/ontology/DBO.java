@@ -19,7 +19,9 @@ public class DBO {
     public static final IRI HAS_VALUE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "has_value");
     public static final IRI HAS_CELL = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "has_cell");
     public static final IRI HAS_UNIT = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "has_unit");
-    public static final IRI COLUMNREFERENCE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "ColumnReference");
+    // public static final IRI COLUMNREFERENCE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "ColumnReference");
+    public static final IRI HAS_TARGET_COLUMN = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "has_target_column");
+    public static final IRI FK_REFERS_TO = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "fk_refers_to");
 
     public static final IRI TABLE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "table");
     public static final IRI CATALOG = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "catalog");
@@ -49,9 +51,13 @@ public class DBO {
         conn.add(HAS_UNIT, RDF.TYPE, OWL.ANNOTATIONPROPERTY);
         conn.add(HAS_UNIT, RDFS.DOMAIN, DATABASECOLUMN);
 
-        conn.add(COLUMNREFERENCE, RDF.TYPE, OWL.OBJECTPROPERTY);
-        conn.add(COLUMNREFERENCE, RDFS.DOMAIN, DATABASECOLUMN);
-        conn.add(COLUMNREFERENCE, RDFS.RANGE, DATABASECOLUMN);
+        conn.add(HAS_TARGET_COLUMN, RDF.TYPE, OWL.ANNOTATEDPROPERTY);
+        conn.add(HAS_TARGET_COLUMN, RDFS.DOMAIN, DATABASECOLUMN);
+
+        conn.add(FK_REFERS_TO, RDF.TYPE, OWL.OBJECTPROPERTY);
+        conn.add(FK_REFERS_TO, RDFS.LABEL, SimpleValueFactory.getInstance().createLiteral("foreign key refers to"));
+        conn.add(FK_REFERS_TO, RDFS.DOMAIN, DATABASECOLUMN);
+        conn.add(FK_REFERS_TO, RDFS.RANGE, PRIMARYKEY);
 
         conn.add(TABLE, RDF.TYPE, OWL.ANNOTATIONPROPERTY);
         conn.add(TABLE, RDFS.RANGE, DATABASETABLE);

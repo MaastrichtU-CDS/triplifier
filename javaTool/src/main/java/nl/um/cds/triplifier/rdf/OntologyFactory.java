@@ -96,21 +96,11 @@ public class OntologyFactory extends RdfFactory{
             IRI columnClassIRI = this.getClassForColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn());
             this.addStatement(columnClassIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
 
-            String predicateName = fKeyColumn.getForeignKeyTable() + "_" + fKeyColumn.getForeignKeyColumn() + "_refersTo_" + fKeyColumn.getPrimaryKeyTable() + "_" + fKeyColumn.getPrimaryKeyColumn();
-            String predicateLabel = fKeyColumn.getForeignKeyTable() + "." + fKeyColumn.getForeignKeyColumn() + " refers to " + fKeyColumn.getPrimaryKeyTable() + "." + fKeyColumn.getPrimaryKeyColumn();
-
-            IRI predicateIRI = vf.createIRI(this.baseIri, predicateName);
-            this.addStatement(predicateIRI, RDF.TYPE, OWL.OBJECTPROPERTY);
-            this.addStatement(predicateIRI, RDFS.LABEL, vf.createLiteral(predicateLabel));
-            this.addStatement(predicateIRI, RDFS.SUBPROPERTYOF, DBO.COLUMNREFERENCE);
-
             IRI sourceIRI = this.addColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn());
             //create target IRI to be sure it exists
             IRI targetIRI = this.addColumn(fKeyColumn.getPrimaryKeyTable(), fKeyColumn.getPrimaryKeyColumn());
             this.addStatement(sourceIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
-
-            this.addStatement(predicateIRI, RDFS.DOMAIN, sourceIRI);
-            this.addStatement(predicateIRI, RDFS.RANGE, targetIRI);
+            this.addStatement(sourceIRI, DBO.HAS_TARGET_COLUMN, targetIRI);
         }
     }
 
@@ -156,9 +146,9 @@ public class OntologyFactory extends RdfFactory{
         String sparqlQuery = "PREFIX dbo: <" + DBO.NAMESPACE + "> \n" +
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
                 "SELECT * WHERE { \n" +
-                "            ?fkPredicate rdfs:subPropertyOf dbo:ColumnReference. \n" +
-                "            ?fkPredicate rdfs:domain ?columnClassUri. \n" +
-                "            ?fkPredicate rdfs:range ?targetClassUri. }";
+                "            ?columnClassUri rdfs:subClassOf dbo:ForeignKey. \n" +
+                "            ?columnClassUri dbo:has_target_column ?targetClassUri. \n" +
+                "}";
         logger.debug(sparqlQuery);
         TupleQuery tq = this.conn.prepareTupleQuery(sparqlQuery);
         TupleQueryResult result = tq.evaluate();

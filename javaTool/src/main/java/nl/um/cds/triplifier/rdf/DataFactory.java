@@ -78,7 +78,6 @@ public class DataFactory extends RdfFactory{
         TupleQueryResult foreignKeys = ontologyFactory.getForeignKeys();
         while (foreignKeys.hasNext()) {
             BindingSet foreignKey = foreignKeys.next();
-            String fkPredicate = foreignKey.getValue("fkPredicate").stringValue();
             String columnClassUri = foreignKey.getValue("columnClassUri").stringValue();
             String targetClassUri = foreignKey.getValue("targetClassUri").stringValue();
 
@@ -87,7 +86,7 @@ public class DataFactory extends RdfFactory{
                     "        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
                     "\n" +
                     "        INSERT {\n" +
-                    "            ?sources <"+fkPredicate+"> ?targets.\n" +
+                    "            ?sources dbo:fk_refers_to ?targets.\n" +
                     "        } WHERE {\n" +
                     "\n" +
                     "            ?sources rdf:type <"+columnClassUri+">;\n" +
