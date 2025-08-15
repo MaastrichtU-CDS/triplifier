@@ -20,6 +20,7 @@ public class DBO {
     public static final IRI HAS_CELL = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "has_cell");
     public static final IRI HAS_UNIT = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "has_unit");
     public static final IRI COLUMNREFERENCE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "ColumnReference");
+    public static final IRI CELL_REFERS_TO = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "cell_refers_to");
 
     public static final IRI TABLE = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "table");
     public static final IRI CATALOG = SimpleValueFactory.getInstance().createIRI(NAMESPACE, "catalog");
@@ -52,6 +53,10 @@ public class DBO {
         conn.add(COLUMNREFERENCE, RDF.TYPE, OWL.OBJECTPROPERTY);
         conn.add(COLUMNREFERENCE, RDFS.DOMAIN, DATABASECOLUMN);
         conn.add(COLUMNREFERENCE, RDFS.RANGE, DATABASECOLUMN);
+
+        conn.add(CELL_REFERS_TO, RDF.TYPE, OWL.OBJECTPROPERTY);
+        conn.add(CELL_REFERS_TO, RDFS.LABEL, SimpleValueFactory.getInstance().createLiteral("cell refers to"));
+        conn.add(CELL_REFERS_TO, RDFS.SUBPROPERTYOF, DBO.COLUMNREFERENCE);
 
         conn.add(TABLE, RDF.TYPE, OWL.ANNOTATIONPROPERTY);
         conn.add(TABLE, RDFS.RANGE, DATABASETABLE);

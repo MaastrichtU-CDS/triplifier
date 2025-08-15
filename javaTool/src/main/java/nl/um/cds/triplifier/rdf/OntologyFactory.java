@@ -96,21 +96,10 @@ public class OntologyFactory extends RdfFactory{
             IRI columnClassIRI = this.getClassForColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn());
             this.addStatement(columnClassIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
 
-            String predicateName = "cell_refers_to";
-            String predicateLabel = "cell refers to";
-
-            IRI predicateIRI = vf.createIRI(this.baseIri, predicateName);
-            this.addStatement(predicateIRI, RDF.TYPE, OWL.OBJECTPROPERTY);
-            this.addStatement(predicateIRI, RDFS.LABEL, vf.createLiteral(predicateLabel));
-            this.addStatement(predicateIRI, RDFS.SUBPROPERTYOF, DBO.COLUMNREFERENCE);
-
             IRI sourceIRI = this.addColumn(fKeyColumn.getForeignKeyTable(), fKeyColumn.getForeignKeyColumn());
             //create target IRI to be sure it exists
             IRI targetIRI = this.addColumn(fKeyColumn.getPrimaryKeyTable(), fKeyColumn.getPrimaryKeyColumn());
             this.addStatement(sourceIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
-
-            this.addStatement(predicateIRI, RDFS.DOMAIN, sourceIRI);
-            this.addStatement(predicateIRI, RDFS.RANGE, targetIRI);
         }
     }
 
