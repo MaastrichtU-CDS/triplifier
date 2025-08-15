@@ -100,6 +100,7 @@ public class OntologyFactory extends RdfFactory{
             //create target IRI to be sure it exists
             IRI targetIRI = this.addColumn(fKeyColumn.getPrimaryKeyTable(), fKeyColumn.getPrimaryKeyColumn());
             this.addStatement(sourceIRI, RDFS.SUBCLASSOF, DBO.FOREIGNKEY);
+            this.addStatement(sourceIRI, DBO.HAS_TARGET_COLUMN, targetIRI);
         }
     }
 
@@ -145,9 +146,9 @@ public class OntologyFactory extends RdfFactory{
         String sparqlQuery = "PREFIX dbo: <" + DBO.NAMESPACE + "> \n" +
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
                 "SELECT * WHERE { \n" +
-                "            ?fkPredicate rdfs:subPropertyOf dbo:ColumnReference. \n" +
-                "            ?fkPredicate rdfs:domain ?columnClassUri. \n" +
-                "            ?fkPredicate rdfs:range ?targetClassUri. }";
+                "            ?columnClassUri rdfs:subClassOf dbo:ForeignKey. \n" +
+                "            ?columnClassUri dbo:has_target_column ?targetClassUri. \n" +
+                "}";
         logger.debug(sparqlQuery);
         TupleQuery tq = this.conn.prepareTupleQuery(sparqlQuery);
         TupleQueryResult result = tq.evaluate();
