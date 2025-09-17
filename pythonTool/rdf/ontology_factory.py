@@ -8,7 +8,6 @@ from .ontology.dbo import (
     DATABASECOLUMN,
     PRIMARYKEY,
     FOREIGNKEY,
-    COLUMNREFERENCE,
     TABLE,
     CATALOG,
     SCHEMA,
@@ -140,29 +139,15 @@ class OntologyFactory(RdfFactory):
             column_class = self.get_class_for_column(fk.foreign_key_table, fk.foreign_key_column)
             self.graph.add((column_class, RDFS.subClassOf, FOREIGNKEY))
 
-            predicate_name = (
-                f"{fk.foreign_key_table}_{fk.foreign_key_column}_refersTo_"
-                f"{fk.primary_key_table}_{fk.primary_key_column}"
-            )
-            predicate_label = (
-                f"{fk.foreign_key_table}.{fk.foreign_key_column} refers to "
-                f"{fk.primary_key_table}.{fk.primary_key_column}"
-            )
-            predicate_iri = URIRef(self.base_iri + predicate_name)
-            self.graph.add((predicate_iri, RDF.type, OWL.ObjectProperty))
-            self.graph.add((predicate_iri, RDFS.label, Literal(predicate_label)))
-            self.graph.add((predicate_iri, RDFS.subPropertyOf, COLUMNREFERENCE))
-
             source_iri = self.add_column(fk.foreign_key_table, fk.foreign_key_column)
             target_iri = self.add_column(fk.primary_key_table, fk.primary_key_column)
-            self.graph.add((predicate_iri, RDFS.domain, source_iri))
-            self.graph.add((predicate_iri, RDFS.range, target_iri))
 
             self.foreign_keys.append({
-                "predicate": predicate_iri,
                 "source_class": source_iri,
                 "target_class": target_iri,
             })
+
+            self.graph.add((source_iri, DBO.has_target_column, target_iri))
 
     def export_data(self, file_path: str) -> None:
         self.graph.serialize(destination=file_path, format="xml")

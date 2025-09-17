@@ -103,7 +103,7 @@ class DataFactory(RdfFactory):
                 targets = target_idx.get(value, [])
                 for s in subjects:
                     for t in targets:
-                        self.add_statement(s, fk["predicate"], t)
+                        self.add_statement(s, DBO.fk_refers_to, t)
 
     def export_data(self, file_path: str) -> None:
         self.graph.serialize(destination=file_path, format="nt")

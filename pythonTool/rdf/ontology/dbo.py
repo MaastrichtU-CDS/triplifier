@@ -1,4 +1,4 @@
-from rdflib import Namespace, RDF, RDFS, OWL
+from rdflib import Namespace, RDF, RDFS, OWL, Literal
 
 DBO = Namespace("http://um-cds/ontologies/databaseontology/")
 
@@ -12,7 +12,8 @@ HAS_COLUMN = DBO.has_column
 HAS_VALUE = DBO.has_value
 HAS_CELL = DBO.has_cell
 HAS_UNIT = DBO.has_unit
-COLUMNREFERENCE = DBO.ColumnReference
+HAS_TARGET_COLUMN = DBO.has_target_column
+FK_REFERS_TO = DBO.fk_refers_to
 
 TABLE = DBO.table
 CATALOG = DBO.catalog
@@ -43,9 +44,13 @@ def add_ontology_to_graph(graph):
     graph.add((HAS_UNIT, RDF.type, OWL.AnnotationProperty))
     graph.add((HAS_UNIT, RDFS.domain, DATABASECOLUMN))
 
-    graph.add((COLUMNREFERENCE, RDF.type, OWL.ObjectProperty))
-    graph.add((COLUMNREFERENCE, RDFS.domain, DATABASECOLUMN))
-    graph.add((COLUMNREFERENCE, RDFS.range, DATABASECOLUMN))
+    graph.add((HAS_TARGET_COLUMN, RDF.type, OWL.AnnotationProperty))
+    graph.add((HAS_TARGET_COLUMN, RDFS.domain, DATABASECOLUMN))
+
+    graph.add((FK_REFERS_TO, RDF.type, OWL.ObjectProperty))
+    graph.add((FK_REFERS_TO, RDFS.label, Literal("foreign key refers to")))
+    graph.add((FK_REFERS_TO, RDFS.domain, DATABASECOLUMN))
+    graph.add((FK_REFERS_TO, RDFS.range, PRIMARYKEY))
 
     graph.add((TABLE, RDF.type, OWL.AnnotationProperty))
     graph.add((TABLE, RDFS.range, DATABASETABLE))

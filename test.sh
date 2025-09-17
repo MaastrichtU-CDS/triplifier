@@ -1,4 +1,4 @@
-!#!/bin/bash
+#!/bin/bash
 
 # This script is used to test the Python tool in a Docker container
 
