@@ -71,7 +71,21 @@ class TriplifierIntegrationTest(unittest.TestCase):
 
         # Compare if the graphs are isomorphic (structurally identical)
         isomorphic = g1.isomorphic(g2)
-        self.assertTrue(isomorphic, "output.ttl is not isomorphic to test_output.ttl")
+        if not isomorphic:
+            missing_triples = set(g2) - set(g1)
+            extra_triples = set(g1) - set(g2)
+            msg = "output.ttl is not isomorphic to test_output.ttl\n"
+            if missing_triples:
+                msg += f"Missing triples in output.ttl:\n"
+                for triple in missing_triples:
+                    msg += f"  {triple}\n"
+            if extra_triples:
+                msg += f"Extra triples in output.ttl:\n"
+                for triple in extra_triples:
+                    msg += f"  {triple}\n"
+            self.fail(msg)
+        else:
+            self.assertTrue(isomorphic, "output.ttl is not isomorphic to test_output.ttl")
 
         # Compare ontology.owl
         g1_owl = rdflib.Graph()
@@ -80,6 +94,18 @@ class TriplifierIntegrationTest(unittest.TestCase):
         g2_owl.parse("test_ontology.owl", format="xml")
 
         isomorphic_owl = g1_owl.isomorphic(g2_owl)
+        if not isomorphic_owl:
+            missing_triples_owl = set(g2_owl) - set(g1_owl)
+            extra_triples_owl = set(g1_owl) - set(g2_owl)
+            print("ontology.owl is not isomorphic to test_ontology.owl")
+            if missing_triples_owl:
+                print("Missing triples in ontology.owl:")
+                for triple in missing_triples_owl:
+                    print(f"  {triple}")
+            if extra_triples_owl:
+                print("Extra triples in ontology.owl:")
+                for triple in extra_triples_owl:
+                    print(f"  {triple}")
         self.assertTrue(isomorphic_owl, "ontology.owl is not isomorphic to test_ontology.owl")
 
 if __name__ == "__main__":
