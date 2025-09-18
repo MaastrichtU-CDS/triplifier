@@ -4,7 +4,6 @@ import os
 import time
 import yaml
 import rdflib
-import psycopg2
 
 class TriplifierIntegrationTest(unittest.TestCase):
     POSTGRES_CONTAINER = "postgresdb"
@@ -32,41 +31,6 @@ class TriplifierIntegrationTest(unittest.TestCase):
             time.sleep(2)
         else:
             raise RuntimeError("PostgreSQL did not become ready in time")
-        
-        # Create database if it doesn't exist
-        conn = psycopg2.connect(
-            user=cls.DB_USER,
-            password=cls.DB_PASSWORD,
-            host="localhost",
-            port=cls.DB_PORT
-        )
-        conn.autocommit = True
-        with conn:
-            with conn.cursor() as cur:
-                cur.execute(f"SELECT 1 FROM pg_database WHERE datname='{cls.DB_NAME}';")
-                exists = cur.fetchone()
-                if not exists:
-                    # CREATE DATABASE cannot run inside a transaction block
-                    cur.execute("commit;")
-                    cur.execute(f"CREATE DATABASE {cls.DB_NAME};")
-        conn.close()
-        
-        # Fill database with contents from 01_execute.sql
-        sql_file_path = os.path.join(cls.SETUP_FOLDER, "data", "01_execute.sql")
-        with open(sql_file_path, "r") as f:
-            sql_commands = f.read()
-        conn = psycopg2.connect(
-            dbname=cls.DB_NAME,
-            user=cls.DB_USER,
-            password=cls.DB_PASSWORD,
-            host="localhost",
-            port=cls.DB_PORT
-        )
-        with conn:
-            with conn.cursor() as cur:
-                cur.execute(sql_commands)
-        conn.close()
-        
         # Create config file
         with open(cls.CONFIG_FILE, "w") as f:
             yaml.dump({"db": {"url": cls.DB_URL}}, f)
