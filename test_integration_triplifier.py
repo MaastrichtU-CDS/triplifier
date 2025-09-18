@@ -23,11 +23,19 @@ class TriplifierIntegrationTest(unittest.TestCase):
         subprocess.run(["bash", cls.SETUP_SCRIPT], cwd=cls.SETUP_FOLDER, check=True)
         # Wait for DB to be ready
         for _ in range(30):
+            # Check if PostgreSQL is ready
             result = subprocess.run([
                 "docker", "exec", cls.POSTGRES_CONTAINER, "pg_isready", "-U", cls.DB_USER
             ], capture_output=True)
             if result.returncode == 0:
-                break
+                # Check if the database exists and has tables
+                db_check = subprocess.run([
+                    "docker", "exec", cls.POSTGRES_CONTAINER,
+                    "psql", "-U", cls.DB_USER, "-d", cls.DB_NAME,
+                    "-c", "SELECT tablename FROM pg_tables WHERE schemaname='public';"
+                ], capture_output=True, text=True)
+                if db_check.returncode == 0 and "tablename" in db_check.stdout and len(db_check.stdout.strip().splitlines()) > 2:
+                    break
             time.sleep(2)
         else:
             raise RuntimeError("PostgreSQL did not become ready in time")
