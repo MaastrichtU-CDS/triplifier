@@ -1,7 +1,3 @@
-CREATE DATABASE my_database;
-
-\c my_database;
-
 CREATE TABLE dummy (
     STUDYSUBJECTID TEXT PRIMARY KEY,
     PROTOCOLID TEXT,
